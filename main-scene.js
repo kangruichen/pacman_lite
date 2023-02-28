@@ -1,9 +1,6 @@
 import {defs, tiny} from './examples/common.js';
-
-import {Axes_Viewer} from "./examples/axes-viewer.js"
-import {Transforms_Sandbox} from "./examples/transforms-sandbox.js"
 import {Assignment2} from "./assignment2.js"
-import {Obj_File_Demo} from "./examples/obj-file-demo.js"
+
 
 
 // Pull these names into this module's scope for convenience:
@@ -23,7 +20,7 @@ const {
 const Minimal_Webgl_Demo = defs.Minimal_Webgl_Demo;
 
 Object.assign(defs,
-            {Transforms_Sandbox}, {Assignment2},{Axes_Viewer},{Obj_File_Demo});
+            {Assignment2});
 
 // ******************** End extra step
 
