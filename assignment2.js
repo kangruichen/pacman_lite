@@ -84,8 +84,9 @@ class Base_Scene extends Scene {
         this.white = new Material(new defs.Basic_Shader());
 
         // Direction status
-        this.up = this.down = this.left = this.right = false;
-        this.up2 = this.down2 = this.left2 = this.right2 = false;
+        this.up = this.down = this.left = this.right = this.swarm = false;
+        this.up2 = true;
+        this.down2 = this.left2 = this.right2 = this.swarm = false;
 
         // Initial location of pacman
         this.pacman_transform = Mat4.identity();
@@ -177,15 +178,27 @@ export class Assignment2 extends Base_Scene {
 
         // Directions for player #2
         this.key_triggered_button("Move up", ["w"], () => {
-            this.up2 = true;
+                this.down2 = false;
+                this.right2 = false;
+                this.left2 = false;
+                this.up2 = true;
         });
         this.key_triggered_button("Move down", ["s"], () => {
+            this.up2 = false;
+            this.left2 = false;
+            this.right2 = false;
             this.down2 = true;
         });
         this.key_triggered_button("Move left", ["a"], () => {
+            this.right2 = false;
+            this.up2 = false;
+            this.down2 = false;
             this.left2 = true;
         });
         this.key_triggered_button("Move right", ["d"], () => {
+            this.left2 = false;
+            this.up2 = false;
+            this.down2 = false;
             this.right2 = true;
         });
     }
@@ -421,24 +434,24 @@ export class Assignment2 extends Base_Scene {
 
         // Draw pacman #2 (speed = 0.2)
         if (this.up2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.2));
-            if (this.down === true || this.left === true || this.right === true)  this.up = false;
+            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+            //if (this.down === true || this.left === true || this.right === true)  this.up = false;
         }
         if (this.down2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, 0.2));
+            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, 0.03));
             if (this.up === true || this.left === true || this.right === true)  this.down = false;
         }
         if (this.left2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-0.2, 0, 0));
+            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-0.03, 0, 0));
             if (this.up === true || this.down === true || this.right === true)  this.left = false;
         }
         if (this.right2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0.2, 0, 0));
+            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0.03, 0, 0));
             if (this.up === true || this.down === true || this.left === true)  this.right = false;
         }
 
-        this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
-        this.shapes.sphere.draw(context, program_state, this.pacman_transform2, this.materials.pacman);
+        //this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
+        this.shapes.cube.draw(context, program_state, this.pacman_transform2, this.materials.pacman);
 
         //Triangle_strip sample
         //model_transform = model_transform.times(Mat4.translation(-8, 0, 0));
