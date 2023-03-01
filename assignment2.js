@@ -484,6 +484,7 @@ export class Assignment2 extends Base_Scene {
         let model_transform = Mat4.identity();
         this.draw_box(context,program_state,model_transform);
         //abc
+        //def
 
 
         // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
