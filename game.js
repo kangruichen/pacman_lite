@@ -87,6 +87,7 @@ class Base_Scene extends Scene {
         this.up = this.down = this.left = this.right = this.swarm = false;
         this.up2 = true;
         this.down2 = this.left2 = this.right2 = this.swarm = false;
+        this.rotate =this.swarm= false;
 
         // Initial location of pacman
         this.pacman_transform = Mat4.identity();
@@ -193,12 +194,22 @@ export class Game extends Base_Scene {
             this.right2 = false;
             this.up2 = false;
             this.down2 = false;
+            this.i = 0;
+            if(this.left===true){
+                this.rotate = true;
+                this.i = 0;
+            }
             this.left2 = true;
         });
         this.key_triggered_button("Move right", ["d"], () => {
             this.left2 = false;
             this.up2 = false;
             this.down2 = false;
+            this.i = 0;
+            if(this.left===true){
+                this.rotate = true;
+                this.i = 0;
+            }
             this.right2 = true;
         });
     }
@@ -442,11 +453,26 @@ export class Game extends Base_Scene {
             if (this.up === true || this.left === true || this.right === true)  this.down = false;
         }
         if (this.left2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-0.03, 0, 0));
+
+            if (this.i<10 && this.rotate === false)
+            {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI*0.05,0, 1, 0));
+                this.i = this.i+1;
+            }
+            else {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+            }
             if (this.up === true || this.down === true || this.right === true)  this.left = false;
         }
         if (this.right2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0.03, 0, 0));
+            if (this.i<10 && this.rotate === false)
+            {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI*0.05,0, 1, 0));
+                this.i = this.i+1;
+            }
+            else {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+            }
             if (this.up === true || this.down === true || this.left === true)  this.right = false;
         }
 
