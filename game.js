@@ -65,6 +65,7 @@ class Base_Scene extends Scene {
         super();
         this.hover = this.swarm = false;
         this.outlined = this.swarm = false;
+        this.swarm2 = false;
         // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
             'cube': new Cube(),
@@ -84,18 +85,20 @@ class Base_Scene extends Scene {
         this.white = new Material(new defs.Basic_Shader());
 
         // Direction status
-        this.up = this.down = this.left = this.right = this.swarm = false;
+        this.up = true;
+        this.down = this.left = this.right = false;
         this.up2 = true;
-        this.down2 = this.left2 = this.right2 = this.swarm = false;
-        this.rotate =this.swarm= false;
+        this.down2 = this.left2 = this.right2 = false;
+        this.rotate = this.swarm= false;
+        this.rotate2 = this.swarm2 = false;
 
         // Initial location of pacman
         this.pacman_transform = Mat4.identity();
         this.pacman_transform = this.pacman_transform.times(Mat4.translation(12, 0, -4));
+        this.direction = 'up';
         this.pacman_transform2 = Mat4.identity();
         this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-12, 0, -4));
     }
-
 
     display(context, program_state) {
         // display():  Called once per frame of animation. Here, the base class's display only does
@@ -165,16 +168,34 @@ export class Game extends Base_Scene {
 
         // Directions for player #1
         this.key_triggered_button("Move up", ["ArrowUp"], () => {
+            this.down = false;
+            this.right = false;
+            this.left = false;
             this.up = true;
+            this.i1 = 0;
+
         });
         this.key_triggered_button("Move down", ["ArrowDown"], () => {
+            this.up = false;
+            this.right = false;
+            this.left = false;
             this.down = true;
+            this.i1 = 0;
+
         });
         this.key_triggered_button("Move left", ["ArrowLeft"], () => {
+            this.down = false;
+            this.right = false;
+            this.up = false;
             this.left = true;
+            this.i1 = 0;
         });
         this.key_triggered_button("Move right", ["ArrowRight"], () => {
+            this.down = false;
+            this.left = false;
+            this.up = false;
             this.right = true;
+            this.i1 = 0;
         });
 
         // Directions for player #2
@@ -195,8 +216,8 @@ export class Game extends Base_Scene {
             this.up2 = false;
             this.down2 = false;
             this.i = 0;
-            if(this.left===true){
-                this.rotate = true;
+            if(this.right2===true){
+                this.rotate2 = true;
                 this.i = 0;
             }
             this.left2 = true;
@@ -206,8 +227,8 @@ export class Game extends Base_Scene {
             this.up2 = false;
             this.down2 = false;
             this.i = 0;
-            if(this.left===true){
-                this.rotate = true;
+            if(this.left2===true){
+                this.rotate2 = true;
                 this.i = 0;
             }
             this.right2 = true;
@@ -422,39 +443,106 @@ export class Game extends Base_Scene {
 
         model_transform = Mat4.identity();  // reset to origin
 
-        // Draw pacman #1 (speed = 0.2)
+        // Draw pacman #1 (speed = 0.03): world perspective
         if (this.up){
-            this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.2));
-            if (this.down === true || this.left === true || this.right === true)  this.up = false;
+            if (this.i1<10 && this.rotate === false) {
+                if (this.direction === "up") {
+                    this.i1 = this.i1 + 10;
+                }
+                if (this.direction === "down") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "right") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "left") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+            } else {
+                this.direction = "up";
+                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+            }
         }
         if (this.down){
-            this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, 0.2));
-            if (this.up === true || this.left === true || this.right === true)  this.down = false;
+            if (this.i1<10 && this.rotate === false) {
+                if (this.direction === "down") {
+                    this.i1 = this.i1 + 10;
+                }
+                if (this.direction === "up") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "right") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "left") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+            } else {
+                this.direction = "down";
+                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+            }
         }
         if (this.left){
-            this.pacman_transform = this.pacman_transform.times(Mat4.translation(-0.2, 0, 0));
-            if (this.up === true || this.down === true || this.right === true)  this.left = false;
+            if (this.i1<10 && this.rotate === false) {
+                if (this.direction === "up") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "down") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "right") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "left") {
+                    this.i1 = this.i1 + 10;
+                }
+            } else {
+                this.direction = "left";
+                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+            }
         }
         if (this.right){
-            this.pacman_transform = this.pacman_transform.times(Mat4.translation(0.2, 0, 0));
-            if (this.up === true || this.down === true || this.left === true)  this.right = false;
+            if (this.i1<10 && this.rotate === false) {
+                if (this.direction === "up") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "down") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "left") {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i1 = this.i1 + 1;
+                }
+                if (this.direction === "right") {
+                    this.i1 = this.i1 + 10;
+                }
+            } else {
+                this.direction = "right";
+                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+            }
         }
+        this.shapes.cube.draw(context, program_state, this.pacman_transform, this.materials.pacman);
 
-        this.up = this.down = this.left = this.right = false;  // reset for next time instance
-        this.shapes.sphere.draw(context, program_state, this.pacman_transform, this.materials.pacman);
-
-        // Draw pacman #2 (speed = 0.2)
+        // Draw pacman #2 (speed = 0.03): pacman perspective
         if (this.up2){
             this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-            //if (this.down === true || this.left === true || this.right === true)  this.up = false;
         }
         if (this.down2){
             this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, 0.03));
-            if (this.up === true || this.left === true || this.right === true)  this.down = false;
         }
         if (this.left2){
-
-            if (this.i<10 && this.rotate === false)
+            if (this.i<10 && this.rotate2 === false)
             {
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI*0.05,0, 1, 0));
                 this.i = this.i+1;
@@ -462,10 +550,9 @@ export class Game extends Base_Scene {
             else {
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
             }
-            if (this.up === true || this.down === true || this.right === true)  this.left = false;
         }
         if (this.right2){
-            if (this.i<10 && this.rotate === false)
+            if (this.i<10 && this.rotate2 === false)
             {
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI*0.05,0, 1, 0));
                 this.i = this.i+1;
@@ -473,7 +560,6 @@ export class Game extends Base_Scene {
             else {
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
             }
-            if (this.up === true || this.down === true || this.left === true)  this.right = false;
         }
 
         //this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
