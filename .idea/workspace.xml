@@ -4,8 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_28_23__16_40__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_28_23__16_40__Changes_.xml" afterDir="false" />
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Added countdown feature so the player cannot change direction too fast.">
+      <change afterPath="$PROJECT_DIR$/assets/earth.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/fav.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/rgb.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/stars.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/teapot.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/text.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/a2_demo.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/image-0.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/image-1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/step-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/step-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/step3.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/step4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/step5.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -73,6 +86,21 @@
       <workItem from="1677693555607" duration="34000" />
       <workItem from="1677725659393" duration="4523000" />
     </task>
+    <task id="LOCAL-00001" summary="Implemented same moving logic for Pacman2.">
+      <created>1677811535120</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1677811535120</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added countdown feature so the player cannot change direction too fast.">
+      <created>1677814218907</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1677814218907</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -103,5 +131,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Implemented same moving logic for Pacman2." />
+    <MESSAGE value="Added countdown feature so the player cannot change direction too fast." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added countdown feature so the player cannot change direction too fast." />
   </component>
 </project>
