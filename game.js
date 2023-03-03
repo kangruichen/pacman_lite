@@ -507,6 +507,18 @@ export class Game extends Base_Scene {
         let ScBean = Mat4.scale(.75, .75, .75);
         this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
 
+        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
+        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
+        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
+        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
+        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
+        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+
+
         model_transform = Mat4.identity();  // reset to origin
 
         if (this.countdown>0)

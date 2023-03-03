@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Model Update : bean">
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Draw 1 Spinning Bean">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -73,7 +73,7 @@
       <workItem from="1677725659393" duration="4523000" />
       <workItem from="1677811258462" duration="1138000" />
       <workItem from="1677812451963" duration="5132000" />
-      <workItem from="1677824732420" duration="1587000" />
+      <workItem from="1677824732420" duration="1711000" />
     </task>
     <task id="LOCAL-00001" summary="Importing obj files is now possible">
       <created>1677814966639</created>
@@ -103,7 +103,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677824850245</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Draw 1 Spinning Bean">
+      <created>1677826352403</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1677826352403</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -137,6 +144,7 @@
     <MESSAGE value="Importing obj files is now possible" />
     <MESSAGE value="Model Update : pacmanOpenMouth" />
     <MESSAGE value="Model Update : bean" />
-    <option name="LAST_COMMIT_MESSAGE" value="Model Update : bean" />
+    <MESSAGE value="Draw 1 Spinning Bean" />
+    <option name="LAST_COMMIT_MESSAGE" value="Draw 1 Spinning Bean" />
   </component>
 </project>
