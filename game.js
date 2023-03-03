@@ -157,12 +157,15 @@ export class Game extends Base_Scene {
                 cnt = cnt+1
             }
         }
-        // Hint:  You might need to create a member variable at somewhere to store the colors, using `this`.
+        // Hint: You might need to create a member variable at somewhere to store the colors, using `this`.
         // Hint2: You can consider add a constructor for class Assignment2, or add member variables in Base_Scene's constructor.
     }
 
     make_control_panel() {
         // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
+        this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
+        this.new_line();
+
         this.key_triggered_button("Change Colors", ["c"], this.set_colors);
         // Add a button for controlling the scene.
         this.key_triggered_button("Outline", ["o"], () => {
