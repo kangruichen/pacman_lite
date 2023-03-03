@@ -166,67 +166,116 @@ export class Game extends Base_Scene {
             // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
             this.hover = !this.hover;
         });
+        this.countdown = 0;
 
         // Directions for player #1
         this.key_triggered_button("Move up", ["ArrowUp"], () => {
-            this.down = false;
-            this.right = false;
-            this.left = false;
-            this.up = true;
-            this.i1 = 0;
+            if (this.countdown === 0) {
+                this.down = false;
+                this.right = false;
+                this.left = false;
+                if (this.up === false)
+                {
+                    this.countdown = 20;
+                }
+                this.up = true;
+                this.i1 = 0;
+            }
 
         });
         this.key_triggered_button("Move down", ["ArrowDown"], () => {
-            this.up = false;
-            this.right = false;
-            this.left = false;
-            this.down = true;
-            this.i1 = 0;
+            if (this.countdown === 0) {
+                this.up = false;
+                this.right = false;
+                this.left = false;
+                if (this.down === false)
+                {
+                    this.countdown = 20;
+                }
+                this.down = true;
+                this.i1 = 0;
+            }
 
         });
         this.key_triggered_button("Move left", ["ArrowLeft"], () => {
-            this.down = false;
-            this.right = false;
-            this.up = false;
-            this.left = true;
-            this.i1 = 0;
+            if (this.countdown === 0) {
+                this.down = false;
+                this.right = false;
+                this.up = false;
+                if(this.left === false)
+                {
+                    this.countdown = 20;
+                }
+                this.left = true;
+                this.i1 = 0;
+            }
         });
         this.key_triggered_button("Move right", ["ArrowRight"], () => {
-            this.down = false;
-            this.left = false;
-            this.up = false;
-            this.right = true;
-            this.i1 = 0;
+            if (this.countdown === 0) {
+                if (this.right===false)
+                {
+                    this.countdown = 20;
+                }
+                this.down = false;
+                this.left = false;
+                this.up = false;
+                this.right = true;
+                this.i1 = 0;
+            }
         });
 
         // Directions for player #2
         this.key_triggered_button("Move up", ["w"], () => {
-            this.down2 = false;
-            this.right2 = false;
-            this.left2 = false;
-            this.up2 = true;
-            this.i = 0
+            if (this.countdown === 0) {
+                this.down2 = false;
+                this.right2 = false;
+                this.left2 = false;
+                if (this.up2 === false)
+                {
+                    this.countdown = 20;
+                }
+                this.up2 = true;
+                this.i = 0;
+            }
         });
         this.key_triggered_button("Move down", ["s"], () => {
-            this.up2 = false;
-            this.left2 = false;
-            this.right2 = false;
-            this.down2 = true;
-            this.i = 0
+            if (this.countdown === 0) {
+                this.up2 = false;
+                this.left2 = false;
+                this.right2 = false;
+                if (this.down2 === false)
+                {
+                    this.countdown = 20;
+                }
+                this.down2 = true;
+                this.i = 0;
+            }
         });
         this.key_triggered_button("Move left", ["a"], () => {
-            this.right2 = false;
-            this.up2 = false;
-            this.down2 = false;
-            this.i = 0;
-            this.left2 = true;
+            if (this.countdown === 0) {
+                this.right2 = false;
+                this.up2 = false;
+                this.down2 = false;
+                this.i = 0;
+                if (this.left2 === false)
+                {
+                    this.countdown = 20;
+                }
+                this.left2 = true;
+            }
         });
         this.key_triggered_button("Move right", ["d"], () => {
-            this.left2 = false;
-            this.up2 = false;
-            this.down2 = false;
-            this.i = 0;
-            this.right2 = true;
+            if (this.countdown === 0) {
+                this.left2 = false;
+                this.up2 = false;
+                this.down2 = false;
+                this.i = 0;
+                if (this.right2 === false)
+                {
+                    this.countdown = 20;
+                }
+                this.right2 = true;
+            }
         });
     }
 
@@ -437,6 +486,10 @@ export class Game extends Base_Scene {
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
 
         model_transform = Mat4.identity();  // reset to origin
+        if (this.countdown>0)
+        {
+            this.countdown = this.countdown - 1;
+        }
 
         // Draw pacman #1 (speed = 0.03): world perspective
         if (this.up){
