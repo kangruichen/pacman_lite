@@ -85,6 +85,8 @@ class Base_Scene extends Scene {
                 {ambient: .4, diffusivity: .6, color: hex_color("#ffffff")}),
             pacman: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFFF00"), specular: 0.6}),
+            pacman2: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#FFC0CB"), specular: 0.6}),
         };
         // The white material and basic shader are used for drawing the outline.
         this.white = new Material(new defs.Basic_Shader());
@@ -627,7 +629,7 @@ export class Game extends Base_Scene {
         }
 
         //this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
-        this.shapes.cube.draw(context, program_state, this.pacman_transform2, this.materials.pacman);
+        this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
 
         //Triangle_strip sample
         //model_transform = model_transform.times(Mat4.translation(-8, 0, 0));
