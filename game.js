@@ -180,6 +180,7 @@ export class Game extends Base_Scene {
             this.hover = !this.hover;
         });
         this.countdown = 0;
+        this.countdown2 = 0;
 
         // Directions for player #1
         this.key_triggered_button("Move up", ["ArrowUp"], () => {
@@ -239,53 +240,53 @@ export class Game extends Base_Scene {
 
         // Directions for player #2
         this.key_triggered_button("Move up", ["w"], () => {
-            if (this.countdown === 0) {
+            if (this.countdown2 === 0) {
                 this.down2 = false;
                 this.right2 = false;
                 this.left2 = false;
                 if (this.up2 === false)
                 {
-                    this.countdown = 20;
+                    this.countdown2 = 20;
                 }
                 this.up2 = true;
                 this.i = 0;
             }
         });
         this.key_triggered_button("Move down", ["s"], () => {
-            if (this.countdown === 0) {
+            if (this.countdown2 === 0) {
                 this.up2 = false;
                 this.left2 = false;
                 this.right2 = false;
                 if (this.down2 === false)
                 {
-                    this.countdown = 20;
+                    this.countdown2 = 20;
                 }
                 this.down2 = true;
                 this.i = 0;
             }
         });
         this.key_triggered_button("Move left", ["a"], () => {
-            if (this.countdown === 0) {
+            if (this.countdown2 === 0) {
                 this.right2 = false;
                 this.up2 = false;
                 this.down2 = false;
                 this.i = 0;
                 if (this.left2 === false)
                 {
-                    this.countdown = 20;
+                    this.countdown2 = 20;
                 }
                 this.left2 = true;
             }
         });
         this.key_triggered_button("Move right", ["d"], () => {
-            if (this.countdown === 0) {
+            if (this.countdown2 === 0) {
                 this.left2 = false;
                 this.up2 = false;
                 this.down2 = false;
                 this.i = 0;
                 if (this.right2 === false)
                 {
-                    this.countdown = 20;
+                    this.countdown2 = 20;
                 }
                 this.right2 = true;
             }
@@ -524,6 +525,11 @@ export class Game extends Base_Scene {
         if (this.countdown>0)
         {
             this.countdown = this.countdown - 1;
+        }
+
+        if (this.countdown2>0)
+        {
+            this.countdown2 = this.countdown2 - 1;
         }
 
         // Draw pacman #1 (speed = 0.03): world perspective
