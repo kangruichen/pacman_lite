@@ -1,4 +1,8 @@
 import {defs, tiny} from './examples/common.js';
+
+import {Obj_File_Demo} from './examples/obj-file-demo.js';
+import {Shape_From_File} from './examples/obj-file-demo.js';
+
 //This is the main file
 const {
     Vector, Vector3, vec, vec3, vec4, color, hex_color, Matrix, Mat4, Light, Shape, Material, Scene,
@@ -72,6 +76,7 @@ class Base_Scene extends Scene {
             'outline': new Cube_Outline(),
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
+            pacman: new Shape_From_File("assets/pacman2.obj"),
         };
 
         // *** Materials
@@ -527,7 +532,7 @@ export class Game extends Base_Scene {
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
             }
         }
-        this.shapes.cube.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+        this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
 
         // Draw pacman #2 (speed = 0.03): pacman perspective
         if (this.up2){
