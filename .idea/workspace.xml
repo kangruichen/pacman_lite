@@ -4,21 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Added countdown feature so the player cannot change direction too fast.">
-      <change afterPath="$PROJECT_DIR$/assets/earth.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/fav.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/rgb.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/stars.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/teapot.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/text.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/a2_demo.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/image-0.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/image-1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/step-1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/step-2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/step3.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/step4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/step5.png" afterDir="false" />
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Importing obj files is now possible">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -41,23 +27,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/kangr/OneDrive/Desktop/UCLA Courses/Winter 2023/COM SCI 174A/Homeworks/W23-Assignment-3&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/nima_/OneDrive/Desktop/CS 174A/assignment2/W23-Assignment-2/W23-Assignment-2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="JavaScript Debug.index.html">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/pacman_lite/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
@@ -85,20 +71,22 @@
       <workItem from="1677642656255" duration="1744000" />
       <workItem from="1677693555607" duration="34000" />
       <workItem from="1677725659393" duration="4523000" />
+      <workItem from="1677811258462" duration="1138000" />
+      <workItem from="1677812451963" duration="4430000" />
     </task>
-    <task id="LOCAL-00001" summary="Implemented same moving logic for Pacman2.">
-      <created>1677811535120</created>
+    <task id="LOCAL-00001" summary="Importing obj files is now possible">
+      <created>1677814966639</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1677811535120</updated>
+      <updated>1677814966639</updated>
     </task>
-    <task id="LOCAL-00002" summary="Added countdown feature so the player cannot change direction too fast.">
-      <created>1677814218907</created>
+    <task id="LOCAL-00002" summary="Importing obj files is now possible">
+      <created>1677815327105</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1677814218907</updated>
+      <updated>1677815327105</updated>
     </task>
     <option name="localTasksCounter" value="3" />
     <servers />
@@ -131,8 +119,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Implemented same moving logic for Pacman2." />
-    <MESSAGE value="Added countdown feature so the player cannot change direction too fast." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added countdown feature so the player cannot change direction too fast." />
+    <MESSAGE value="Importing obj files is now possible" />
+    <option name="LAST_COMMIT_MESSAGE" value="Importing obj files is now possible" />
   </component>
 </project>

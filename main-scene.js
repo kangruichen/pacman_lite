@@ -2,6 +2,9 @@ import {defs, tiny} from './examples/common.js';
 //import {Assignment2} from "./assignment2.js"
 import {Game} from "./game.js";
 
+import {Obj_File_Demo} from "./examples/obj-file-demo.js";
+import {Shape_From_File} from "./examples/obj-file-demo.js";
+
 
 // Pull these names into this module's scope for convenience:
 const {
@@ -20,7 +23,7 @@ const {
 const Minimal_Webgl_Demo = defs.Minimal_Webgl_Demo;
 
 Object.assign(defs,
-            {Game});
+            {Game}, {Obj_File_Demo}, {Shape_From_File});
 
 // ******************** End extra step
 
