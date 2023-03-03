@@ -96,6 +96,7 @@ class Base_Scene extends Scene {
         this.pacman_transform = Mat4.identity();
         this.pacman_transform = this.pacman_transform.times(Mat4.translation(12, 0, -4));
         this.direction = 'up';
+        this.direction2 = 'up';
         this.pacman_transform2 = Mat4.identity();
         this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-12, 0, -4));
     }
@@ -204,22 +205,20 @@ export class Game extends Base_Scene {
             this.right2 = false;
             this.left2 = false;
             this.up2 = true;
+            this.i = 0
         });
         this.key_triggered_button("Move down", ["s"], () => {
             this.up2 = false;
             this.left2 = false;
             this.right2 = false;
             this.down2 = true;
+            this.i = 0
         });
         this.key_triggered_button("Move left", ["a"], () => {
             this.right2 = false;
             this.up2 = false;
             this.down2 = false;
             this.i = 0;
-            if(this.right2===true){
-                this.rotate2 = true;
-                this.i = 0;
-            }
             this.left2 = true;
         });
         this.key_triggered_button("Move right", ["d"], () => {
@@ -227,10 +226,6 @@ export class Game extends Base_Scene {
             this.up2 = false;
             this.down2 = false;
             this.i = 0;
-            if(this.left2===true){
-                this.rotate2 = true;
-                this.i = 0;
-            }
             this.right2 = true;
         });
     }
@@ -536,28 +531,92 @@ export class Game extends Base_Scene {
 
         // Draw pacman #2 (speed = 0.03): pacman perspective
         if (this.up2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+            if (this.i<10 && this.rotate2 === false) {
+                if (this.direction2 === "up") {
+                    this.i = this.i + 10;
+                }
+                if (this.direction2 === "down") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "right") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "left") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+            } else {
+                this.direction2 = "up";
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+            }
         }
         if (this.down2){
-            this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, 0.03));
+            if (this.i<10 && this.rotate2 === false) {
+                if (this.direction2 === "down") {
+                    this.i = this.i + 10;
+                }
+                if (this.direction2 === "up") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "right") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "left") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+            } else {
+                this.direction2 = "down";
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+            }
         }
         if (this.left2){
             if (this.i<10 && this.rotate2 === false)
             {
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI*0.05,0, 1, 0));
-                this.i = this.i+1;
-            }
-            else {
+                if (this.direction2 === "up") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "down") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "right") {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                    this.i = this.i + 1;
+                }
+                if (this.direction2 === "left") {
+                    this.i = this.i + 10;
+                }
+            } else {
+                this.direction2 = "left";
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
             }
         }
         if (this.right2){
             if (this.i<10 && this.rotate2 === false)
             {
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI*0.05,0, 1, 0));
-                this.i = this.i+1;
+                if (this.direction2 === "up") {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                this.i = this.i + 1;
             }
-            else {
+            if (this.direction2 === "down") {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                this.i = this.i + 1;
+            }
+            if (this.direction2 === "left") {
+                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                this.i = this.i + 1;
+            }
+            if (this.direction2 === "right") {
+                this.i = this.i + 10;
+            }
+            } else {
+                this.direction2 = "right";
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
             }
         }
