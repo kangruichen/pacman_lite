@@ -76,7 +76,7 @@ class Base_Scene extends Scene {
             'outline': new Cube_Outline(),
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
-            pacman: new Shape_From_File("assets/pacman2.obj"),
+            pacman: new Shape_From_File("assets/pacmanMouthOpen.obj"),
         };
 
         // *** Materials
