@@ -157,7 +157,7 @@ export class Game extends Base_Scene {
                 cnt = cnt+1
             }
         }
-        // Hint:  You might need to create a member variable at somewhere to store the colors, using `this`.
+        // Hint: You might need to create a member variable at somewhere to store the colors, using `this`.
         // Hint2: You can consider add a constructor for class Assignment2, or add member variables in Base_Scene's constructor.
     }
 
