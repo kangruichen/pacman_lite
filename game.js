@@ -77,6 +77,7 @@ class Base_Scene extends Scene {
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
             pacman: new Shape_From_File("assets/pacmanMouthOpen.obj"),
+            bean: new Shape_From_File("assets/bean.obj"),
         };
 
         // *** Materials
@@ -87,6 +88,8 @@ class Base_Scene extends Scene {
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFFF00"), specular: 0.6}),
             pacman2: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFC0CB"), specular: 0.6}),
+            bean: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
         };
         // The white material and basic shader are used for drawing the outline.
         this.white = new Material(new defs.Basic_Shader());
@@ -496,6 +499,16 @@ export class Game extends Base_Scene {
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
 
         model_transform = Mat4.identity();  // reset to origin
+
+
+        //draw bean
+        model_transform = model_transform.times(Mat4.translation(10, 0, -10));
+        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
+        let ScBean = Mat4.scale(.75, .75, .75);
+        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+
+        model_transform = Mat4.identity();  // reset to origin
+
         if (this.countdown>0)
         {
             this.countdown = this.countdown - 1;
