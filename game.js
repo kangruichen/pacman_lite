@@ -732,9 +732,9 @@ export class Game extends Base_Scene {
         if(this.creation) {
             let i = 0;
             let j = 10;
-            let k = -10;
+            let k = -10;//j stands for x coordinate and k stands for z coordinate
             while (i<bean_count) {
-                this.bean_location[i]=[k,j];
+                this.bean_location[i]=[j,k];
                 this.bean_status[i] = true;
                 k = k-3;
                 i = i + 1;
@@ -765,12 +765,12 @@ export class Game extends Base_Scene {
 
         let w = 0;
         while (w<bean_count) {
-            if (this.pac1_front < this.bean_location[w][0] && this.pac1_back > this.bean_location[w][0] && this.pac1_right > this.bean_location[w][1] && this.pac1_left < this.bean_location[w][1]) {
+            if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
                 this.bean_status[w] = false;
             }
             if(this.bean_status[w]) {
                 model_transform = Mat4.identity();
-                model_transform = model_transform.times(Mat4.translation(this.bean_location[w][1],0,this.bean_location[w][0]));
+                model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0],0,this.bean_location[w][1]));
                 this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
             }
             w+=1;

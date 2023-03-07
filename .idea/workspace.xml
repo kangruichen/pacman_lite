@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Optimized countdown feature for two players">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Implemented collision detection for beans. Now beans can be eaten!">
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +116,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677872968615</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Implemented collision detection for beans. Now beans can be eaten!">
+      <created>1678174910090</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1678174910090</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +159,7 @@
     <MESSAGE value="Model Update : bean" />
     <MESSAGE value="Draw 1 Spinning Bean" />
     <MESSAGE value="Optimized countdown feature for two players" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimized countdown feature for two players" />
+    <MESSAGE value="Implemented collision detection for beans. Now beans can be eaten!" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented collision detection for beans. Now beans can be eaten!" />
   </component>
 </project>
