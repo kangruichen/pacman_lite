@@ -109,6 +109,15 @@ class Base_Scene extends Scene {
         this.direction2 = 'up';
         this.pacman_transform2 = Mat4.identity();
         this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-12, 0, -4));
+        this.pac1_front = -5;
+        this.pac1_left = 11;
+        this.pac1_right = 13;
+        this.pac1_back = -3;
+
+        this.bean_location = [];
+        this.bean_status = [];
+
+        this.creation = true;
     }
 
     display(context, program_state) {
@@ -168,7 +177,8 @@ export class Game extends Base_Scene {
         // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
         this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
         this.new_line();
-
+        this.live_string(box => box.textContent = "- Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
+            + ", left: " + this.pac1_left.toFixed(2)  + ", right: " + this.pac1_right.toFixed(2));
         this.key_triggered_button("Change Colors", ["c"], this.set_colors);
         // Add a button for controlling the scene.
         this.key_triggered_button("Outline", ["o"], () => {
@@ -502,24 +512,6 @@ export class Game extends Base_Scene {
         model_transform = Mat4.identity();  // reset to origin
 
 
-        //draw bean
-        model_transform = model_transform.times(Mat4.translation(10, 0, -10));
-        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
-        let ScBean = Mat4.scale(.75, .75, .75);
-        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-
-        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
-        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
-        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
-        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
-        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-        model_transform = model_transform.times(Mat4.translation(0, 0, -3));
-        this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-
-
         model_transform = Mat4.identity();  // reset to origin
 
         if (this.countdown>0)
@@ -553,6 +545,9 @@ export class Game extends Base_Scene {
             } else {
                 this.direction = "up";
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                this.pac1_front = this.pac1_front-0.03;
+                this.pac1_back = this.pac1_back-0.03;
+                this.pac1_location = this.pac1_location + vec4(0,0,-0.03,0);
             }
         }
         if (this.down){
@@ -575,6 +570,9 @@ export class Game extends Base_Scene {
             } else {
                 this.direction = "down";
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                this.pac1_front = this.pac1_front+0.03;
+                this.pac1_back = this.pac1_back+0.03;
+                this.pac1_location = this.pac1_location + vec4(0,0,0.03,0);
             }
         }
         if (this.left){
@@ -597,6 +595,9 @@ export class Game extends Base_Scene {
             } else {
                 this.direction = "left";
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                this.pac1_left = this.pac1_left-0.03;
+                this.pac1_right = this.pac1_right-0.03;
+                this.pac1_location = this.pac1_location + vec4(-0.03,0,0,0);
             }
         }
         if (this.right){
@@ -619,6 +620,8 @@ export class Game extends Base_Scene {
             } else {
                 this.direction = "right";
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                this.pac1_left = this.pac1_left+0.03;
+                this.pac1_right = this.pac1_right+0.03;
             }
         }
         this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
@@ -717,6 +720,63 @@ export class Game extends Base_Scene {
 
         //this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
         this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+
+        let bean_count = 3;// Put the number of beans wanna generate, and they will be generated in a pattern
+        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
+        let ScBean = Mat4.scale(.75, .75, .75);
+
+
+        model_transform = Mat4.identity();
+        //model_transform = model_transform.times(Mat4.translation(10, 0, -10));
+
+        if(this.creation) {
+            let i = 0;
+            let j = 10;
+            let k = -10;
+            while (i<bean_count) {
+                this.bean_location[i]=[k,j];
+                this.bean_status[i] = true;
+                k = k-3;
+                i = i + 1;
+            }
+            this.creation = false;
+        }
+
+
+        /*
+        this.bean_location.push([-10, -10]);
+        this.bean_status.push(true);
+        model_transform = model_transform.times(Mat4.translation(10, 0, -10));
+
+         */
+
+        //draw bean
+
+        /*
+        if(this.pac1_front<this.bean_location[0][0] && this.pac1_back>this.bean_location[0][0] && this.pac1_right > this.bean_location[0][1] && this.pac1_left < this.bean_location[0][1])
+        {
+            this.bean_status[0] = false;
+        }
+
+        if(this.bean_status[0]) {
+            this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        }*/
+
+
+        let w = 0;
+        while (w<bean_count) {
+            if (this.pac1_front < this.bean_location[w][0] && this.pac1_back > this.bean_location[w][0] && this.pac1_right > this.bean_location[w][1] && this.pac1_left < this.bean_location[w][1]) {
+                this.bean_status[w] = false;
+            }
+            if(this.bean_status[w]) {
+                model_transform = Mat4.identity();
+                model_transform = model_transform.times(Mat4.translation(this.bean_location[w][1],0,this.bean_location[w][0]));
+                this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+            }
+            w+=1;
+        }
+
+
 
         //Triangle_strip sample
         //model_transform = model_transform.times(Mat4.translation(-8, 0, 0));
