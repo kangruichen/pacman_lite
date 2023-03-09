@@ -114,6 +114,11 @@ class Base_Scene extends Scene {
         this.pac1_right = 13;
         this.pac1_back = -3;
 
+        this.pac2_front = -5;
+        this.pac2_left = -13;
+        this.pac2_right = -11;
+        this.pac2_back = -3;
+
         this.bean_location = [];
         this.bean_status = [];
 
@@ -177,8 +182,11 @@ export class Game extends Base_Scene {
         // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
         this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
         this.new_line();
-        this.live_string(box => box.textContent = "- Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
+        this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
             + ", left: " + this.pac1_left.toFixed(2)  + ", right: " + this.pac1_right.toFixed(2));
+        this.new_line();
+        this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
+            + ", left: " + this.pac2_left.toFixed(2)  + ", right: " + this.pac2_right.toFixed(2));
         this.key_triggered_button("Change Colors", ["c"], this.set_colors);
         // Add a button for controlling the scene.
         this.key_triggered_button("Outline", ["o"], () => {
@@ -547,7 +555,6 @@ export class Game extends Base_Scene {
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
                 this.pac1_front = this.pac1_front-0.03;
                 this.pac1_back = this.pac1_back-0.03;
-                this.pac1_location = this.pac1_location + vec4(0,0,-0.03,0);
             }
         }
         if (this.down){
@@ -572,7 +579,6 @@ export class Game extends Base_Scene {
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
                 this.pac1_front = this.pac1_front+0.03;
                 this.pac1_back = this.pac1_back+0.03;
-                this.pac1_location = this.pac1_location + vec4(0,0,0.03,0);
             }
         }
         if (this.left){
@@ -597,7 +603,6 @@ export class Game extends Base_Scene {
                 this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
                 this.pac1_left = this.pac1_left-0.03;
                 this.pac1_right = this.pac1_right-0.03;
-                this.pac1_location = this.pac1_location + vec4(-0.03,0,0,0);
             }
         }
         if (this.right){
@@ -647,6 +652,8 @@ export class Game extends Base_Scene {
             } else {
                 this.direction2 = "up";
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                this.pac2_front = this.pac2_front-0.03;
+                this.pac2_back = this.pac2_back-0.03;
             }
         }
         if (this.down2){
@@ -669,6 +676,8 @@ export class Game extends Base_Scene {
             } else {
                 this.direction2 = "down";
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                this.pac2_front = this.pac2_front+0.03;
+                this.pac2_back = this.pac2_back+0.03;
             }
         }
         if (this.left2){
@@ -692,6 +701,8 @@ export class Game extends Base_Scene {
             } else {
                 this.direction2 = "left";
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                this.pac2_left = this.pac2_left-0.03;
+                this.pac2_right = this.pac2_right-0.03;
             }
         }
         if (this.right2){
@@ -715,6 +726,8 @@ export class Game extends Base_Scene {
             } else {
                 this.direction2 = "right";
                 this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                this.pac2_left = this.pac2_left+0.03;
+                this.pac2_right = this.pac2_right+0.03;
             }
         }
 
@@ -766,6 +779,9 @@ export class Game extends Base_Scene {
         let w = 0;
         while (w<bean_count) {
             if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
+                this.bean_status[w] = false;
+            }
+            if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
                 this.bean_status[w] = false;
             }
             if(this.bean_status[w]) {
