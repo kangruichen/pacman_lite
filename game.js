@@ -133,7 +133,8 @@ class Base_Scene extends Scene {
         // some initial setup.
 
         // Setup -- This part sets up the scene's overall camera matrix, projection matrix, and lights:
-        this.initial_camera_location = Mat4.look_at(vec3(0, 35, 10), vec3(0, 20, 0), vec3(0, 1, 0)).times(Mat4.translation(1,0,0));
+        //Second parameter of the first vec3 controls the height of the camera. Can also be adjusted in the translation at the end.
+        this.initial_camera_location = Mat4.look_at(vec3(0, 50, 1), vec3(0, 10, -1), vec3(0, 1, 0)).times(Mat4.translation(0,0,15));
         if (!context.scratchpad.controls) {
             //this.children.push(context.scratchpad.controls = new defs.Movement_Controls());
             // Define the global camera and projection matrices, which are stored in program_state.
@@ -143,7 +144,7 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        const light_position = vec4(0, 5, 5, 1);
+        const light_position = vec4(0, 5, -15, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
