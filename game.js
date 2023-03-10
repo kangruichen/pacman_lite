@@ -1,5 +1,5 @@
 import {defs, tiny} from './examples/common.js';
-
+import {Text_Line} from "./examples/text-demo.js";
 import {Obj_File_Demo} from './examples/obj-file-demo.js';
 import {Shape_From_File} from './examples/obj-file-demo.js';
 
@@ -80,7 +80,9 @@ class Base_Scene extends Scene {
             pacmanEyes: new Shape_From_File("assets/pacmanEyes2.obj"),
             bean: new Shape_From_File("assets/beanPixel6.obj"),
             cherry: new Shape_From_File("assets/cherry.obj"),
+            text: new Text_Line(35)
         };
+
 
         // *** Materials
         this.materials = {
@@ -110,21 +112,21 @@ class Base_Scene extends Scene {
 
         // Initial location of pacman
         this.pacman_transform = Mat4.identity();
-        this.pacman_transform = this.pacman_transform.times(Mat4.translation(12, 0, -4));
+        this.pacman_transform = this.pacman_transform.times(Mat4.translation(3, 0, -26));
         this.direction = 'up';
-        this.direction2 = 'up';
         this.pacman_transform2 = Mat4.identity();
-        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-12, 0, -4));
+        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-15, 0, -3));
+        this.direction2 = 'up';
 
-        this.pac1_front = -5;
-        this.pac1_left = 11;
-        this.pac1_right = 13;
-        this.pac1_back = -3;
+        this.pac1_front = -27;
+        this.pac1_left = 2;
+        this.pac1_right = 4;
+        this.pac1_back = -25;
 
-        this.pac2_front = -5;
-        this.pac2_left = -13;
-        this.pac2_right = -11;
-        this.pac2_back = -3;
+        this.pac2_front = -4;
+        this.pac2_left = -16;
+        this.pac2_right = -14;
+        this.pac2_back = -2;
 
         this.bean_location = [];
         this.bean_status = [];
@@ -140,7 +142,7 @@ class Base_Scene extends Scene {
 
         // Setup -- This part sets up the scene's overall camera matrix, projection matrix, and lights:
         //Second parameter of the first vec3 controls the height of the camera. Can also be adjusted in the translation at the end.
-        this.initial_camera_location = Mat4.look_at(vec3(0, 50, 1), vec3(0, 10, -1), vec3(0, 1, 0)).times(Mat4.translation(2,0,15));
+        this.initial_camera_location = Mat4.look_at(vec3(0, 75, 1), vec3(0, 21, -1), vec3(0, 1, 0)).times(Mat4.translation(-2,0,25));
         if (!context.scratchpad.controls) {
             //this.children.push(context.scratchpad.controls = new defs.Movement_Controls());
             // Define the global camera and projection matrices, which are stored in program_state.
@@ -361,7 +363,7 @@ export class Game extends Base_Scene {
         //model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
         //this.shapes.outline.draw(context, program_state, model_transform, this.white,"LINES");
 
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        model_transform = Mat4.identity();
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
 
         // Blocks for boundary
@@ -385,166 +387,217 @@ export class Game extends Base_Scene {
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(24, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
 
-        // ... more blocks for the map ...
-        /*
+        model_transform = model_transform.times(Mat4.translation(28, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
 
-        model_transform = model_transform.times(Mat4.translation(20, 0, -6));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-        model_transform = model_transform.times(Mat4.translation(2, 0, 0));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, -2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(0, 0, 2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(0, 0, 2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));*/
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        model_transform = model_transform.times(Mat4.translation(0, 0, 2));
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+        // END CREATING BOUNDARY
 
         model_transform = Mat4.identity();  // reset to origin
 
-        if (this.countdown>0)
-        {
+        // For rotation animation
+        if (this.countdown>0) {
             this.countdown = this.countdown - 1;
         }
-
-        if (this.countdown2>0)
-        {
+        if (this.countdown2>0) {
             this.countdown2 = this.countdown2 - 1;
         }
 
-        // Draw pacman #1 (speed = 0.03): world perspective
+        // Draw pacman #1
         if (this.up){
             if (this.i1<10 && this.rotate === false) {
                 if (this.direction === "up") {
@@ -574,7 +627,7 @@ export class Game extends Base_Scene {
                     i = i + 1;
                 }
 
-                if(judge && this.pac1_front>-32.5) {
+                if(judge && this.pac1_front>-54.5) {
                     this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
                     this.pac1_front = this.pac1_front - 0.03;
                     this.pac1_back = this.pac1_back - 0.03;
@@ -644,7 +697,7 @@ export class Game extends Base_Scene {
                     }
                     i = i + 1;
                 }
-                if (judge && this.pac1_left>-20.5) {
+                if (judge && this.pac1_left>-24.5) {
                     this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
                     this.pac1_left = this.pac1_left - 0.03;
                     this.pac1_right = this.pac1_right - 0.03;
@@ -679,7 +732,7 @@ export class Game extends Base_Scene {
                     }
                     i = i + 1;
                 }
-                if (judge && this.pac1_right<18.5) {
+                if (judge && this.pac1_right<24.5) {
                     this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
                     this.pac1_left = this.pac1_left + 0.03;
                     this.pac1_right = this.pac1_right + 0.03;
@@ -699,7 +752,7 @@ export class Game extends Base_Scene {
             this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
             this.materials.pacmanEyes);
 
-        // Draw pacman #2 (speed = 0.03): pacman perspective
+        // Draw pacman #2
         if (this.up2){
             if (this.i<10 && this.rotate2 === false) {
                 if (this.direction2 === "up") {
@@ -729,7 +782,7 @@ export class Game extends Base_Scene {
                     i = i + 1;
                 }
 
-                if(judge && this.pac2_front>-32.5) {
+                if(judge && this.pac2_front>-54.5) {
                     this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
                     this.pac2_front = this.pac2_front - 0.03;
                     this.pac2_back = this.pac2_back - 0.03;
@@ -800,7 +853,7 @@ export class Game extends Base_Scene {
                     }
                     i = i + 1;
                 }
-                if (judge && this.pac2_left>-20.5) {
+                if (judge && this.pac2_left>-24.5) {
                     this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
                     this.pac2_left = this.pac2_left - 0.03;
                     this.pac2_right = this.pac2_right - 0.03;
@@ -836,7 +889,7 @@ export class Game extends Base_Scene {
                     }
                     i = i + 1;
                 }
-                if (judge && this.pac2_right<18.5) {
+                if (judge && this.pac2_right < 24.5) {
                     this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
                     this.pac2_left = this.pac2_left + 0.03;
                     this.pac2_right = this.pac2_right + 0.03;
@@ -848,7 +901,6 @@ export class Game extends Base_Scene {
         let TrPacman2Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman2Eye = Mat4.scale(.2, .2, .2);
 
-        //this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
         this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
         this.shapes.pacmanEyes.draw(context, program_state,
             this.pacman_transform2.times(TrPacman2Eye1).times(ScPacman2Eye),
@@ -857,51 +909,666 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 3;// Put the number of beans wanna generate, and they will be generated in a pattern
+        let bean_count = 3;  // Put the number of beans wanna generate
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
         let ScBean = Mat4.scale(.75, .75, .75);
-
-
         model_transform = Mat4.identity();
-        //model_transform = model_transform.times(Mat4.translation(10, 0, -10));
 
+        // ----------------- START STORING LOCATIONS (in arrays) --------------------
+        // SYMMETRY: fairness in competition mode
 
         if(this.creation) {
             let i = 0;
-            let j = 10;
-            let k = -10;//j stands for x coordinate and k stands for z coordinate
+            let x = -23;  // right in the middle of gaps
+            let z = -9;
             while (i<bean_count) {
-                this.bean_location[i]=[j,k];
+                this.bean_location[i]=[x,z];
                 this.bean_status[i] = true;
-                k = k - 3;
+                z = z - 3;
                 i = i + 1;
             }
 
             i = 0;
-            let x = -2;
-            let z = -8;
-
+            x = 0;
+            z = -2;
             while (i<3) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z - 2;
+            }
+            z += 2;
+            x -= 6;
+            while (i<7) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            x -= 4;
+            while (i<9) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            z -= 6;
+            x += 2;
+            while (i<11) {
                 this.block_location[i] = [x,z];
                 i = i + 1;
                 x = x + 2;
             }
+            z -= 6;
+            x -= 2;
+            while (i<15) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            z -= 6;
+            x += 2;
+            while (i<19) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            x += 4;
+            while (i<26) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z + 2;
+            }
+            z -= 8;
+            x += 2;
+            while (i<29) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z += 6;
+            x -= 2;
+            while (i<36) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z -= 2;
+            x -= 8;
+            while (i<39) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z - 2;
+            }
 
-            while (i<7) {
+            // Lower right quadrant
+            x = 6;
+            z = -6;
+            while (i<43) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            x += 4;
+            while (i<45) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z -= 6;
+            x -= 2;
+            while (i<47) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            z -= 6;
+            x += 2;
+            while (i<51) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z -= 6;
+            x -= 2;
+            while (i<55) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            x -= 4;
+            while (i<62) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z + 2;
+            }
+            z -= 8;
+            x -= 2;
+            while (i<65) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+
+
+            // Upper left quadrant
+            x = 0;
+            z = -54;
+            while (i<68) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z + 2;
+            }
+            z -= 2;
+            x -= 6;
+            while (i<72) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            x -= 4;
+            while (i<74) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            z += 6;
+            x += 2;
+            while (i<76) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z += 6;
+            x -= 2;
+            while (i<80) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            z += 6;
+            x += 2;
+            while (i<84) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            x += 4;
+            while (i<91) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z - 2;
+            }
+            z += 8;
+            x += 2;
+            while (i<94) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z -= 6;
+            x -= 2;
+            while (i<101) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z += 2;
+            x -= 8;
+            while (i<104) {
                 this.block_location[i] = [x,z];
                 i = i + 1;
                 z = z + 2;
             }
 
+            // Upper right quadrant
+            x = 6;
+            z = -50;
+            while (i<108) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            x += 4;
+            while (i<110) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z += 6;
+            x -= 2;
+            while (i<112) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            z += 6;
+            x += 2;
+            while (i<116) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            z += 6;
+            x -= 2;
+            while (i<120) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            x -= 4;
+            while (i<127) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z - 2;
+            }
+            z += 8;
+            x -= 2;
+            while (i<130) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+
+            // Middle part
+            z = -24;
+            x = 0;
+            while (i<134) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            x -= 2;
+            z -= 2;
+            while (i<137) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z - 2;
+            }
+            z = -24;
+            x = -2;
+            while (i<140) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x - 2;
+            }
+            x += 2;
+            z -= 2;
+            while (i<143) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z - 2;
+            }
+            z += 2;
+            x += 1;
+            while (i<145) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            x += 4;
+            while (i<147) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+            // ----------------- END STORING LOCATIONS (Total: # blocks inside) --------------------
             this.creation = false;
         }
 
-
+        // ----------------- START DRAWING BLOCKS --------------------
         let i = 0;
-        let x = -2;
-        let z = -8;
-
+        let x = 0;
+        let z = -2;
         while (i<3) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z - 2;
+        }
+        z += 2;
+        x -= 6;
+        while (i<7) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        x -= 4;
+        while (i<9) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        z -= 6;
+        x += 2;
+        while (i<11) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z -= 6;
+        x -= 2;
+        while (i<15) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        z -= 6;
+        x += 2;
+        while (i<19) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        x += 4;
+        while (i<26) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z + 2;
+        }
+        z -= 8;
+        x += 2;
+        while (i<29) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z += 6;
+        x -= 2;
+        while (i<36) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z -= 2;
+        x -= 8;
+        while (i<39) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z - 2;
+        }
+
+        // Lower right quadrant
+        x = 6;
+        z = -6;
+        while (i<43) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        x += 4;
+        while (i<45) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z -= 6;
+        x -= 2;
+        while (i<47) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        z -= 6;
+        x += 2;
+        while (i<51) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z -= 6;
+        x -= 2;
+        while (i<55) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        x -= 4;
+        while (i<62) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z + 2;
+        }
+        z -= 8;
+        x -= 2;
+        while (i<65) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+
+
+        // Upper left quadrant
+        x = 0;
+        z = -54;
+        while (i<68) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z + 2;
+        }
+        z -= 2;
+        x -= 6;
+        while (i<72) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        x -= 4;
+        while (i<74) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        z += 6;
+        x += 2;
+        while (i<76) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z += 6;
+        x -= 2;
+        while (i<80) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        z += 6;
+        x += 2;
+        while (i<84) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        x += 4;
+        while (i<91) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z - 2;
+        }
+        z += 8;
+        x += 2;
+        while (i<94) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z -= 6;
+        x -= 2;
+        while (i<101) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z += 2;
+        x -= 8;
+        while (i<104) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z + 2;
+        }
+
+        // Upper right quadrant
+        x = 6;
+        z = -50;
+        while (i<108) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        x += 4;
+        while (i<110) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z += 6;
+        x -= 2;
+        while (i<112) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        z += 6;
+        x += 2;
+        while (i<116) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        z += 6;
+        x -= 2;
+        while (i<120) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        x -= 4;
+        while (i<127) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z - 2;
+        }
+        z += 8;
+        x -= 2;
+        while (i<130) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+
+        // Middle part
+        z = -24;
+        x = 0;
+        while (i<134) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        x -= 2;
+        z -= 2;
+        while (i<137) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z - 2;
+        }
+        z = -24;
+        x = -2;
+        while (i<140) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x - 2;
+        }
+        x += 2;
+        z -= 2;
+        while (i<143) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            z = z - 2;
+        }
+        z += 2;
+        x += 1;
+        while (i<145) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+        x += 4;
+        while (i<147) {
             model_transform = model_transform.times(Mat4.translation(x, 0, z));
             this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
             model_transform = Mat4.identity();
@@ -909,26 +1576,18 @@ export class Game extends Base_Scene {
             x = x + 2;
         }
 
-        while (i<7) {
-            model_transform = model_transform.times(Mat4.translation(x, 0, z));
-            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-            model_transform = Mat4.identity();
-            z = z + 2;
-            i = i + 1;
-        }
 
+
+
+        // ----------------- END DRAWING BLOCKS --------------------
 
 
         /*
+        //draw beans
         this.bean_location.push([-10, -10]);
         this.bean_status.push(true);
         model_transform = model_transform.times(Mat4.translation(10, 0, -10));
 
-         */
-
-        //draw bean
-
-        /*
         if(this.pac1_front<this.bean_location[0][0] && this.pac1_back>this.bean_location[0][0] && this.pac1_right > this.bean_location[0][1] && this.pac1_left < this.bean_location[0][1])
         {
             this.bean_status[0] = false;
@@ -936,9 +1595,11 @@ export class Game extends Base_Scene {
 
         if(this.bean_status[0]) {
             this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-        }*/
+        }
+        */
 
 
+        //draw beans
         let w = 0;
         while (w<bean_count) {
             if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
@@ -965,7 +1626,6 @@ export class Game extends Base_Scene {
         let k = 0.025 * Math.PI;
         let count = 0;
         let a = 1;
-
 
         while (count<7) {
             model_transform = model_transform.times(Mat4.translation(-a, a*1.5, 0));
@@ -1000,10 +1660,6 @@ export class Game extends Base_Scene {
         const blue = hex_color("#1a9ffa");
         let model_transform = Mat4.identity();
         this.draw_box(context,program_state,model_transform);
-        //abc
-        //def
 
-
-        // TODO:  Draw your entire scene here.  Use this.draw_box( graphics_state, model_transform ) to call your helper.
     }
 }
