@@ -76,8 +76,10 @@ class Base_Scene extends Scene {
             'outline': new Cube_Outline(),
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
-            pacman: new Shape_From_File("assets/pacmanMouthOpen.obj"),
-            bean: new Shape_From_File("assets/bean.obj"),
+            pacman: new Shape_From_File("assets/pacmanRotateY90.obj"),
+            pacmanEyes: new Shape_From_File("assets/pacmanEyes2.obj"),
+            bean: new Shape_From_File("assets/beanPixel6.obj"),
+            cherry: new Shape_From_File("assets/cherry.obj"),
         };
 
         // *** Materials
@@ -88,7 +90,11 @@ class Base_Scene extends Scene {
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFFF00"), specular: 0.6}),
             pacman2: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFC0CB"), specular: 0.6}),
+            pacmanEyes: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#000000"), specular: 0.6}),
             bean: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
+            cherry: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
         };
         // The white material and basic shader are used for drawing the outline.
@@ -629,7 +635,18 @@ export class Game extends Base_Scene {
                 this.pac1_right = this.pac1_right+0.03;
             }
         }
+
+        let TrPacman1Eye1 = Mat4.translation(-0.2, 1, 0.05);
+        let TrPacman1Eye2 = Mat4.translation(-0.2, -1, 0.05);
+        let ScPacman1Eye = Mat4.scale(.2, .2, .2);
+
         this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+        this.shapes.pacmanEyes.draw(context, program_state,
+            this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
+            this.materials.pacmanEyes);
+        this.shapes.pacmanEyes.draw(context, program_state,
+            this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
+            this.materials.pacmanEyes);
 
         // Draw pacman #2 (speed = 0.03): pacman perspective
         if (this.up2){
@@ -731,8 +748,18 @@ export class Game extends Base_Scene {
             }
         }
 
+        let TrPacman2Eye1 = Mat4.translation(-0.2, 1, 0.05);
+        let TrPacman2Eye2 = Mat4.translation(-0.2, -1, 0.05);
+        let ScPacman2Eye = Mat4.scale(.2, .2, .2);
+
         //this.up2 = this.down2 = this.left2 = this.right2 = false;  // reset for next time instance
         this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        this.shapes.pacmanEyes.draw(context, program_state,
+            this.pacman_transform2.times(TrPacman2Eye1).times(ScPacman2Eye),
+            this.materials.pacmanEyes);
+        this.shapes.pacmanEyes.draw(context, program_state,
+            this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
+            this.materials.pacmanEyes);
 
         let bean_count = 3;// Put the number of beans wanna generate, and they will be generated in a pattern
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
