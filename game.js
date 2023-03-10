@@ -115,6 +115,7 @@ class Base_Scene extends Scene {
         this.direction2 = 'up';
         this.pacman_transform2 = Mat4.identity();
         this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(-12, 0, -4));
+
         this.pac1_front = -5;
         this.pac1_left = 11;
         this.pac1_right = 13;
@@ -128,6 +129,8 @@ class Base_Scene extends Scene {
         this.bean_location = [];
         this.bean_status = [];
 
+        this.block_location = [];
+
         this.creation = true;
     }
 
@@ -136,7 +139,8 @@ class Base_Scene extends Scene {
         // some initial setup.
 
         // Setup -- This part sets up the scene's overall camera matrix, projection matrix, and lights:
-        this.initial_camera_location = Mat4.look_at(vec3(0, 35, 10), vec3(0, 20, 0), vec3(0, 1, 0)).times(Mat4.translation(1,0,0));
+        //Second parameter of the first vec3 controls the height of the camera. Can also be adjusted in the translation at the end.
+        this.initial_camera_location = Mat4.look_at(vec3(0, 50, 1), vec3(0, 10, -1), vec3(0, 1, 0)).times(Mat4.translation(2,0,15));
         if (!context.scratchpad.controls) {
             //this.children.push(context.scratchpad.controls = new defs.Movement_Controls());
             // Define the global camera and projection matrices, which are stored in program_state.
@@ -146,7 +150,7 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        const light_position = vec4(0, 5, 5, 1);
+        const light_position = vec4(0, 5, -15, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
@@ -193,6 +197,9 @@ export class Game extends Base_Scene {
         this.new_line();
         this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
             + ", left: " + this.pac2_left.toFixed(2)  + ", right: " + this.pac2_right.toFixed(2));
+        /*this.new_line();
+        this.live_string(box => box.textContent = "first block" + this.block_location.at(0) + ", 2nd block: " + this.block_location.at(1)
+            + ", 3rd block: " + this.block_location.at(2)  + ", 4th block: " + this.block_location.at(3) + ", 5th block: " + this.block_location.at(4) + ", 6th block: " + this.block_location.at(6));*/
         this.key_triggered_button("Change Colors", ["c"], this.set_colors);
         // Add a button for controlling the scene.
         this.key_triggered_button("Outline", ["o"], () => {
@@ -214,7 +221,7 @@ export class Game extends Base_Scene {
                 this.left = false;
                 if (this.up === false)
                 {
-                    this.countdown = 20;
+                    this.countdown = 30;
                 }
                 this.up = true;
                 this.i1 = 0;
@@ -228,7 +235,7 @@ export class Game extends Base_Scene {
                 this.left = false;
                 if (this.down === false)
                 {
-                    this.countdown = 20;
+                    this.countdown = 30;
                 }
                 this.down = true;
                 this.i1 = 0;
@@ -242,7 +249,7 @@ export class Game extends Base_Scene {
                 this.up = false;
                 if(this.left === false)
                 {
-                    this.countdown = 20;
+                    this.countdown = 30;
                 }
                 this.left = true;
                 this.i1 = 0;
@@ -252,7 +259,7 @@ export class Game extends Base_Scene {
             if (this.countdown === 0) {
                 if (this.right===false)
                 {
-                    this.countdown = 20;
+                    this.countdown = 30;
                 }
                 this.down = false;
                 this.left = false;
@@ -270,7 +277,7 @@ export class Game extends Base_Scene {
                 this.left2 = false;
                 if (this.up2 === false)
                 {
-                    this.countdown2 = 20;
+                    this.countdown2 = 30;
                 }
                 this.up2 = true;
                 this.i = 0;
@@ -283,7 +290,7 @@ export class Game extends Base_Scene {
                 this.right2 = false;
                 if (this.down2 === false)
                 {
-                    this.countdown2 = 20;
+                    this.countdown2 = 30;
                 }
                 this.down2 = true;
                 this.i = 0;
@@ -297,7 +304,7 @@ export class Game extends Base_Scene {
                 this.i = 0;
                 if (this.left2 === false)
                 {
-                    this.countdown2 = 20;
+                    this.countdown2 = 30;
                 }
                 this.left2 = true;
             }
@@ -310,7 +317,7 @@ export class Game extends Base_Scene {
                 this.i = 0;
                 if (this.right2 === false)
                 {
-                    this.countdown2 = 20;
+                    this.countdown2 = 30;
                 }
                 this.right2 = true;
             }
@@ -508,6 +515,8 @@ export class Game extends Base_Scene {
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
 
         // ... more blocks for the map ...
+        /*
+
         model_transform = model_transform.times(Mat4.translation(20, 0, -6));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(2, 0, 0));
@@ -521,10 +530,7 @@ export class Game extends Base_Scene {
         model_transform = model_transform.times(Mat4.translation(0, 0, 2));
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
         model_transform = model_transform.times(Mat4.translation(0, 0, 2));
-        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
-
-        model_transform = Mat4.identity();  // reset to origin
-
+        this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));*/
 
         model_transform = Mat4.identity();  // reset to origin
 
@@ -558,9 +564,21 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction = "up";
-                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                this.pac1_front = this.pac1_front-0.03;
-                this.pac1_back = this.pac1_back-0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac1_front-1.5 < this.block_location[i][1] && this.pac1_back > this.block_location[i][1] && this.pac1_right+1 > this.block_location[i][0] && this.pac1_left-1 < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+
+                if(judge && this.pac1_front>-32.5) {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                    this.pac1_front = this.pac1_front - 0.03;
+                    this.pac1_back = this.pac1_back - 0.03;
+                }
             }
         }
         if (this.down){
@@ -582,9 +600,20 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction = "down";
-                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                this.pac1_front = this.pac1_front+0.03;
-                this.pac1_back = this.pac1_back+0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac1_front < this.block_location[i][1] && this.pac1_back+1.5 > this.block_location[i][1] && this.pac1_right+1 > this.block_location[i][0] && this.pac1_left-1 < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+                if(judge && this.pac1_back<-1.5) {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                    this.pac1_front = this.pac1_front + 0.03;
+                    this.pac1_back = this.pac1_back + 0.03;
+                }
             }
         }
         if (this.left){
@@ -606,9 +635,20 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction = "left";
-                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                this.pac1_left = this.pac1_left-0.03;
-                this.pac1_right = this.pac1_right-0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac1_front-1 < this.block_location[i][1] && this.pac1_back+1 > this.block_location[i][1] && this.pac1_right > this.block_location[i][0] && this.pac1_left-1.5 < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+                if (judge && this.pac1_left>-20.5) {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                    this.pac1_left = this.pac1_left - 0.03;
+                    this.pac1_right = this.pac1_right - 0.03;
+                }
             }
         }
         if (this.right){
@@ -630,9 +670,20 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction = "right";
-                this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                this.pac1_left = this.pac1_left+0.03;
-                this.pac1_right = this.pac1_right+0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac1_front-1 < this.block_location[i][1] && this.pac1_back+1 > this.block_location[i][1] && this.pac1_right+1.5 > this.block_location[i][0] && this.pac1_left < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+                if (judge && this.pac1_right<18.5) {
+                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                    this.pac1_left = this.pac1_left + 0.03;
+                    this.pac1_right = this.pac1_right + 0.03;
+                }
             }
         }
 
@@ -668,9 +719,21 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction2 = "up";
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                this.pac2_front = this.pac2_front-0.03;
-                this.pac2_back = this.pac2_back-0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac2_front-1.5 < this.block_location[i][1] && this.pac2_back > this.block_location[i][1] && this.pac2_right+1 > this.block_location[i][0] && this.pac2_left-1 < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+
+                if(judge && this.pac2_front>-32.5) {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                    this.pac2_front = this.pac2_front - 0.03;
+                    this.pac2_back = this.pac2_back - 0.03;
+                }
             }
         }
         if (this.down2){
@@ -692,9 +755,20 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction2 = "down";
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                this.pac2_front = this.pac2_front+0.03;
-                this.pac2_back = this.pac2_back+0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac2_front < this.block_location[i][1] && this.pac2_back+1.5 > this.block_location[i][1] && this.pac2_right+1 > this.block_location[i][0] && this.pac2_left-1 < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+                if(judge && this.pac2_back<-1.5) {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                    this.pac2_front = this.pac2_front + 0.03;
+                    this.pac2_back = this.pac2_back + 0.03;
+                }
             }
         }
         if (this.left2){
@@ -717,9 +791,20 @@ export class Game extends Base_Scene {
                 }
             } else {
                 this.direction2 = "left";
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                this.pac2_left = this.pac2_left-0.03;
-                this.pac2_right = this.pac2_right-0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac2_front-1 < this.block_location[i][1] && this.pac2_back+1 > this.block_location[i][1] && this.pac2_right > this.block_location[i][0] && this.pac2_left-1.5 < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+                if (judge && this.pac2_left>-20.5) {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                    this.pac2_left = this.pac2_left - 0.03;
+                    this.pac2_right = this.pac2_right - 0.03;
+                }
             }
         }
         if (this.right2){
@@ -742,9 +827,20 @@ export class Game extends Base_Scene {
             }
             } else {
                 this.direction2 = "right";
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                this.pac2_left = this.pac2_left+0.03;
-                this.pac2_right = this.pac2_right+0.03;
+                let i = 0;
+                let judge = true;
+                while (i<this.block_location.length){
+                    if (this.pac2_front-1 < this.block_location[i][1] && this.pac2_back+1 > this.block_location[i][1] && this.pac2_right+1.5 > this.block_location[i][0] && this.pac2_left < this.block_location[i][0]){
+                        judge = false;
+                        break;
+                    }
+                    i = i + 1;
+                }
+                if (judge && this.pac2_right<18.5) {
+                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                    this.pac2_left = this.pac2_left + 0.03;
+                    this.pac2_right = this.pac2_right + 0.03;
+                }
             }
         }
 
@@ -769,6 +865,7 @@ export class Game extends Base_Scene {
         model_transform = Mat4.identity();
         //model_transform = model_transform.times(Mat4.translation(10, 0, -10));
 
+
         if(this.creation) {
             let i = 0;
             let j = 10;
@@ -776,11 +873,50 @@ export class Game extends Base_Scene {
             while (i<bean_count) {
                 this.bean_location[i]=[j,k];
                 this.bean_status[i] = true;
-                k = k-3;
+                k = k - 3;
                 i = i + 1;
             }
+
+            i = 0;
+            let x = -2;
+            let z = -8;
+
+            while (i<3) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                x = x + 2;
+            }
+
+            while (i<7) {
+                this.block_location[i] = [x,z];
+                i = i + 1;
+                z = z + 2;
+            }
+
             this.creation = false;
         }
+
+
+        let i = 0;
+        let x = -2;
+        let z = -8;
+
+        while (i<3) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            i = i + 1;
+            x = x + 2;
+        }
+
+        while (i<7) {
+            model_transform = model_transform.times(Mat4.translation(x, 0, z));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+            model_transform = Mat4.identity();
+            z = z + 2;
+            i = i + 1;
+        }
+
 
 
         /*
