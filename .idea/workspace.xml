@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Trivial stuff">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_28_23__16_40__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2_28_23__16_40__Changes_.xml" afterDir="false" />
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Updated map, camera, pacman initial positions, shading">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -36,7 +35,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/kangr/CS174A/project/pacman_lite",
+    "last_opened_file_path": "C:/Users/kangr/OneDrive/Desktop/UCLA Courses/Winter 2023/COM SCI 174A/Homeworks/W23-Assignment-4",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -76,7 +75,10 @@
       <workItem from="1677811258462" duration="1138000" />
       <workItem from="1677812451963" duration="5132000" />
       <workItem from="1677824732420" duration="1711000" />
-      <workItem from="1678465415618" duration="9086000" />
+      <workItem from="1678465415618" duration="9547000" />
+      <workItem from="1678644603819" duration="224000" />
+      <workItem from="1678644848539" duration="4005000" />
+      <workItem from="1678734823206" duration="5586000" />
     </task>
     <task id="LOCAL-00001" summary="Importing obj files is now possible">
       <created>1677814966639</created>
@@ -134,7 +136,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678175311659</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Updated map, camera, pacman initial positions, shading">
+      <created>1678475593522</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1678475593522</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,6 +181,7 @@
     <MESSAGE value="Optimized countdown feature for two players" />
     <MESSAGE value="Implemented collision detection for beans. Now beans can be eaten!" />
     <MESSAGE value="Trivial stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="Trivial stuff" />
+    <MESSAGE value="Updated map, camera, pacman initial positions, shading" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated map, camera, pacman initial positions, shading" />
   </component>
 </project>

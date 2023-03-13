@@ -5,7 +5,7 @@ import {Shape_From_File} from './examples/obj-file-demo.js';
 
 //This is the main file
 const {
-    Vector, Vector3, vec, vec3, vec4, color, hex_color, Matrix, Mat4, Light, Shape, Material, Scene,
+    Vector, Vector3, vec, vec3, vec4, color, hex_color, Matrix, Mat4, Light, Shape, Material, Texture, Scene, Shader
 } = tiny;
 
 class Cube extends Shape {
@@ -98,9 +98,18 @@ class Base_Scene extends Scene {
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
             cherry: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
+            text_image: new Material(new defs.Textured_Phong(1),
+                {ambient: 1, diffusivity: 0, texture: new Texture("assets/stars.png")}),
+            start_page: new Material(new defs.Phong_Shader(),
+                {ambient: 1, texture: new Texture("assets/stars.png", "NEAREST")})
         };
+
         // The white material and basic shader are used for drawing the outline.
         this.white = new Material(new defs.Basic_Shader());
+
+        // Game status
+        this.status = "START";
+        this.paused = true;
 
         // Direction status
         this.up = true;
@@ -191,145 +200,174 @@ export class Game extends Base_Scene {
     }
 
     make_control_panel() {
-        // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
-        this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
-        this.new_line();
-        this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
-            + ", left: " + this.pac1_left.toFixed(2)  + ", right: " + this.pac1_right.toFixed(2));
-        this.new_line();
-        this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
-            + ", left: " + this.pac2_left.toFixed(2)  + ", right: " + this.pac2_right.toFixed(2));
-        /*this.new_line();
-        this.live_string(box => box.textContent = "first block" + this.block_location.at(0) + ", 2nd block: " + this.block_location.at(1)
-            + ", 3rd block: " + this.block_location.at(2)  + ", 4th block: " + this.block_location.at(3) + ", 5th block: " + this.block_location.at(4) + ", 6th block: " + this.block_location.at(6));*/
-        this.key_triggered_button("Change Colors", ["c"], this.set_colors);
-        // Add a button for controlling the scene.
-        this.key_triggered_button("Outline", ["o"], () => {
-            // TODO:  Requirement 5b:  Set a flag here that will toggle your outline on and off
-            this.outlined = !this.outlined;
-        });
-        this.key_triggered_button("Sit still", ["m"], () => {
-            // TODO:  Requirement 3d:  Set a flag here that will toggle your swaying motion on and off.
-            this.hover = !this.hover;
-        });
-        this.countdown = 0;
-        this.countdown2 = 0;
+        if(this.status == "PLAY") {
+            // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
+            this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
+            this.new_line();
+            this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
+                + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
+                + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
+            /*this.new_line();
+            this.live_string(box => box.textContent = "first block" + this.block_location.at(0) + ", 2nd block: " + this.block_location.at(1)
+                + ", 3rd block: " + this.block_location.at(2)  + ", 4th block: " + this.block_location.at(3) + ", 5th block: " + this.block_location.at(4) + ", 6th block: " + this.block_location.at(6));*/
+            this.key_triggered_button("Change Colors", ["c"], this.set_colors);
+            // Add a button for controlling the scene.
+            this.key_triggered_button("Outline", ["o"], () => {
+                this.outlined = !this.outlined;
+            });
+            this.key_triggered_button("Sit still", ["m"], () => {
+                this.hover = !this.hover;
+            });
+            this.countdown = 0;
+            this.countdown2 = 0;
 
-        // Directions for player #1
-        this.key_triggered_button("Move up", ["ArrowUp"], () => {
-            if (this.countdown === 0) {
-                this.down = false;
-                this.right = false;
-                this.left = false;
-                if (this.up === false)
-                {
-                    this.countdown = 30;
+            // Directions for player #1
+            this.key_triggered_button("Move up", ["ArrowUp"], () => {
+                if (this.countdown === 0) {
+                    this.down = false;
+                    this.right = false;
+                    this.left = false;
+                    if (this.up === false) {
+                        this.countdown = 30;
+                    }
+                    this.up = true;
+                    this.i1 = 0;
                 }
-                this.up = true;
-                this.i1 = 0;
-            }
 
-        });
-        this.key_triggered_button("Move down", ["ArrowDown"], () => {
-            if (this.countdown === 0) {
-                this.up = false;
-                this.right = false;
-                this.left = false;
-                if (this.down === false)
-                {
-                    this.countdown = 30;
+            });
+            this.key_triggered_button("Move down", ["ArrowDown"], () => {
+                if (this.countdown === 0) {
+                    this.up = false;
+                    this.right = false;
+                    this.left = false;
+                    if (this.down === false) {
+                        this.countdown = 30;
+                    }
+                    this.down = true;
+                    this.i1 = 0;
                 }
-                this.down = true;
-                this.i1 = 0;
-            }
 
-        });
-        this.key_triggered_button("Move left", ["ArrowLeft"], () => {
-            if (this.countdown === 0) {
-                this.down = false;
-                this.right = false;
-                this.up = false;
-                if(this.left === false)
-                {
-                    this.countdown = 30;
+            });
+            this.key_triggered_button("Move left", ["ArrowLeft"], () => {
+                if (this.countdown === 0) {
+                    this.down = false;
+                    this.right = false;
+                    this.up = false;
+                    if (this.left === false) {
+                        this.countdown = 30;
+                    }
+                    this.left = true;
+                    this.i1 = 0;
                 }
-                this.left = true;
-                this.i1 = 0;
-            }
-        });
-        this.key_triggered_button("Move right", ["ArrowRight"], () => {
-            if (this.countdown === 0) {
-                if (this.right===false)
-                {
-                    this.countdown = 30;
+            });
+            this.key_triggered_button("Move right", ["ArrowRight"], () => {
+                if (this.countdown === 0) {
+                    if (this.right === false) {
+                        this.countdown = 30;
+                    }
+                    this.down = false;
+                    this.left = false;
+                    this.up = false;
+                    this.right = true;
+                    this.i1 = 0;
                 }
-                this.down = false;
-                this.left = false;
-                this.up = false;
-                this.right = true;
-                this.i1 = 0;
-            }
-        });
+            });
 
-        // Directions for player #2
-        this.key_triggered_button("Move up", ["w"], () => {
-            if (this.countdown2 === 0) {
-                this.down2 = false;
-                this.right2 = false;
-                this.left2 = false;
-                if (this.up2 === false)
-                {
-                    this.countdown2 = 30;
+            // Directions for player #2
+            this.key_triggered_button("Move up", ["w"], () => {
+                if (this.countdown2 === 0) {
+                    this.down2 = false;
+                    this.right2 = false;
+                    this.left2 = false;
+                    if (this.up2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.up2 = true;
+                    this.i = 0;
                 }
-                this.up2 = true;
-                this.i = 0;
-            }
-        });
-        this.key_triggered_button("Move down", ["s"], () => {
-            if (this.countdown2 === 0) {
-                this.up2 = false;
-                this.left2 = false;
-                this.right2 = false;
-                if (this.down2 === false)
-                {
-                    this.countdown2 = 30;
+            });
+            this.key_triggered_button("Move down", ["s"], () => {
+                if (this.countdown2 === 0) {
+                    this.up2 = false;
+                    this.left2 = false;
+                    this.right2 = false;
+                    if (this.down2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.down2 = true;
+                    this.i = 0;
                 }
-                this.down2 = true;
-                this.i = 0;
-            }
-        });
-        this.key_triggered_button("Move left", ["a"], () => {
-            if (this.countdown2 === 0) {
-                this.right2 = false;
-                this.up2 = false;
-                this.down2 = false;
-                this.i = 0;
-                if (this.left2 === false)
-                {
-                    this.countdown2 = 30;
+            });
+            this.key_triggered_button("Move left", ["a"], () => {
+                if (this.countdown2 === 0) {
+                    this.right2 = false;
+                    this.up2 = false;
+                    this.down2 = false;
+                    this.i = 0;
+                    if (this.left2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.left2 = true;
                 }
-                this.left2 = true;
-            }
-        });
-        this.key_triggered_button("Move right", ["d"], () => {
-            if (this.countdown2 === 0) {
-                this.left2 = false;
-                this.up2 = false;
-                this.down2 = false;
-                this.i = 0;
-                if (this.right2 === false)
-                {
-                    this.countdown2 = 30;
+            });
+            this.key_triggered_button("Move right", ["d"], () => {
+                if (this.countdown2 === 0) {
+                    this.left2 = false;
+                    this.up2 = false;
+                    this.down2 = false;
+                    this.i = 0;
+                    if (this.right2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.right2 = true;
                 }
-                this.right2 = true;
-            }
-        });
+            });
+        }
+
+        // Other temporary game status (default to one mode)
+        else if(this.status == "START") {
+            this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
+            this.new_line();
+            this.key_triggered_button("Colab Mode", ["y"], () => {
+                this.status = "PLAY";
+                this.paused = false;
+
+                // Remove buttons on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+
+                // Add main game buttons
+                this.make_control_panel();
+            });
+            this.key_triggered_button("Compete Mode", ["n"], () => {
+                this.status = "PLAY2";
+                this.paused = false;
+
+                // Remove buttons on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+
+                // Add main game buttons
+                this.make_control_panel();
+            });
+        }
     }
 
     draw_box(context, program_state, model_transform) {
-        // TODO:  Helper function for requirement 3 (see hint).
-        //        This should make changes to the model_transform matrix, draw the next box, and return the newest model_transform.
-        // Hint:  You can add more parameters for this function, like the desired color, index of the box, etc.
         let clk = this.t = program_state.animation_time * Math.PI *2 / 1000;
         if (clk == 0) {
             this.color = [];
@@ -347,24 +385,26 @@ export class Game extends Base_Scene {
                 }
             }
         }
-        //model_transform = model_transform.times(Mat4.scale(1, 1.5 , 1));
-
-        if (!this.outlined){
-            this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));}
-        else{
-            this.shapes.outline.draw(context, program_state, model_transform, this.white,"LINES");}
-        //model_transform = model_transform.times(Mat4.scale(1, 1/1.5, 1));
-
-
 
         const t = this.t = program_state.animation_time / 1000;
 
-        //Outline sample
-        //model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
-        //this.shapes.outline.draw(context, program_state, model_transform, this.white,"LINES");
+        // Set game status
+        if(this.status == "START") {
+            this.paused = true;
+            model_transform = Mat4.identity().times(Mat4.translation(0, 0, -10)).times(Mat4.scale(10,10,10));
+            this.shapes.cube.draw(context, program_state, model_transform, this.materials.start_page);
+            return;
+        }
+        if (this.paused) { return;}
 
         model_transform = Mat4.identity();
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+
+        // Score panel
+        //this.shapes.box.draw(context, program_state, Mat4.identity().times(Mat4.scale(1, 1, 1)).times(Mat4.translation(0, 5, 0)), this.materials.text_image);
+        //this.shapes.text.set_string("Hello, world!");
+        //this.shapes.text.draw(context, program_state,
+         //   model_transform.times(Mat4.translation(0, 5, 0)), this.text_image);
 
         // Blocks for boundary
         model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
@@ -744,13 +784,24 @@ export class Game extends Base_Scene {
         let TrPacman1Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman1Eye = Mat4.scale(.2, .2, .2);
 
-        this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
-        this.shapes.pacmanEyes.draw(context, program_state,
-            this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
-            this.materials.pacmanEyes);
-        this.shapes.pacmanEyes.draw(context, program_state,
-            this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
-            this.materials.pacmanEyes);
+        // Draw pacman depending on two modes
+        if (this.status === "PLAY") {
+            this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+            this.shapes.pacmanEyes.draw(context, program_state,
+                this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
+                this.materials.pacmanEyes);
+            this.shapes.pacmanEyes.draw(context, program_state,
+                this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
+                this.materials.pacmanEyes);
+        } else if (this.status === "PLAY2") {
+            this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman.override(this.color[0]));
+            this.shapes.pacmanEyes.draw(context, program_state,
+                this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
+                this.materials.pacmanEyes);
+            this.shapes.pacmanEyes.draw(context, program_state,
+                this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
+                this.materials.pacmanEyes);
+        }
 
         // Draw pacman #2
         if (this.up2){
