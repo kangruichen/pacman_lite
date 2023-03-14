@@ -162,6 +162,13 @@ class Base_Scene extends Scene {
 
         this.pac1_poison = [];
         this.pac2_poison = [];
+        this.pac1_normal = [];
+        this.pac2_normal = [];
+
+        // Score board
+        this.total_score = 0;
+        this.score1 = 0;
+        this.score2 = 0;
 
         this.creation = true;
     }
@@ -231,17 +238,13 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
-            /*this.new_line();
-            this.live_string(box => box.textContent = "first block" + this.block_location.at(0) + ", 2nd block: " + this.block_location.at(1)
-                + ", 3rd block: " + this.block_location.at(2)  + ", 4th block: " + this.block_location.at(3) + ", 5th block: " + this.block_location.at(4) + ", 6th block: " + this.block_location.at(6));*/
-            this.key_triggered_button("Change Colors", ["c"], this.set_colors);
-            // Add a button for controlling the scene.
-            this.key_triggered_button("Outline", ["o"], () => {
-                this.outlined = !this.outlined;
-            });
-            this.key_triggered_button("Sit still", ["m"], () => {
-                this.hover = !this.hover;
-            });
+            this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #1 score: " + this.score1.toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #2 score: " + this.score2.toFixed(0));
+            this.new_line();
+
             this.countdown = 0;
             this.countdown2 = 0;
 
@@ -1773,12 +1776,12 @@ export class Game extends Base_Scene {
         if (this.status === "PLAY") {
             while (w < bean_count) {
                 if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
-                    this.bean_status[w] = false;
+                    this.bean_status[w] = 0;
                 }
                 if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
-                    this.bean_status[w] = false;
+                    this.bean_status[w] = 2;
                 }
-                if (this.bean_status[w]) {
+                if (this.bean_status[w] === true) {
                     model_transform = Mat4.identity();
                     model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
                     this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
@@ -1810,42 +1813,20 @@ export class Game extends Base_Scene {
             }
         }
 
-
-
-
-        //Triangle_strip sample
-        //model_transform = model_transform.times(Mat4.translation(-8, 0, 0));
-        //this.shapes.strip.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[1]),"TRIANGLE_STRIP");
-
-        /*
-        let k = 0.025 * Math.PI;
-        let count = 0;
-        let a = 1;
-
-        while (count<7) {
-            model_transform = model_transform.times(Mat4.translation(-a, a*1.5, 0));
-            if (!this.hover) {
-                model_transform = model_transform.times(Mat4.rotation(-(Math.cos(clk) + 1) * k, 0, 0, 1));
-            }
-
-            model_transform = model_transform.times(Mat4.rotation(  Math.PI+k*2, 0, 0, 1));
-            model_transform = model_transform.times(Mat4.scale(1, 1.5 , 1));
-            model_transform = model_transform.times(Mat4.translation(-a, -a, 0));
-            if (!this.outlined) {
-                if (count % 2 != 0) {
-                    this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[count + 1]));
+        // Update player scores
+        if (this.status === "PLAY" || this.status === "PLAY2") {
+            this.score1 = 0;
+            this.score2 = 0;
+            for (let i = 0; i < bean_count; i++) {
+                if (this.bean_status[i] === 0) {
+                    this.score1 += 1;
                 }
-                else{
-                    this.shapes.strip.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[count + 1]),"TRIANGLE_STRIP");
+                if (this.bean_status[i] === 2) {
+                    this.score2 += 1;
                 }
             }
-            else{
-                this.shapes.outline.draw(context, program_state, model_transform, this.white,"LINES");
-            }
-            model_transform = model_transform.times(Mat4.scale(1, 1/1.5 , 1));
-            a = -a;
-            count += 1;
-        }*/
+        }
+        this.total_score = this.score1 + this.score2;
 
         return model_transform;
     }
