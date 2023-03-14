@@ -4,6 +4,8 @@ import {Game} from "./game.js";
 
 import {Obj_File_Demo} from "./examples/obj-file-demo.js";
 import {Shape_From_File} from "./examples/obj-file-demo.js";
+// import {Transforms_Sandbox_Base} from "./examples/transforms-sandbox.js";
+// import {Transforms_Sandbox} from "./examples/transforms-sandbox.js";
 
 
 // Pull these names into this module's scope for convenience:

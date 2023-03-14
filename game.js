@@ -77,8 +77,9 @@ class Base_Scene extends Scene {
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
             pacman: new Shape_From_File("assets/pacmanRotateY90.obj"),
+            pacmanMouthClose: new Shape_From_File("assets/pacmanMouthClose1.obj"),
             pacmanEyes: new Shape_From_File("assets/pacmanEyes2.obj"),
-            bean: new Shape_From_File("assets/beanPixel6.obj"),
+            bean: new Shape_From_File("assets/beanPixel8.obj"),
             cherry: new Shape_From_File("assets/cherry.obj"),
             text: new Text_Line(35)
         };
@@ -784,9 +785,20 @@ export class Game extends Base_Scene {
         let TrPacman1Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman1Eye = Mat4.scale(.2, .2, .2);
 
+        const timePacmanAnimation = program_state.animation_time / 300
+        let timePacmanAnimationInt = Math.floor(timePacmanAnimation);
+        let timeMod2 = timePacmanAnimationInt % 2;
+
         // Draw pacman depending on two modes
         if (this.status === "PLAY") {
-            this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+
+            //This if and else if is for the animation of the Pacman.
+            if (timeMod2 == 0){
+                this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+            }
+            else if (timeMod2 == 1){
+                this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+            }
             this.shapes.pacmanEyes.draw(context, program_state,
                 this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
@@ -794,7 +806,15 @@ export class Game extends Base_Scene {
                 this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
         } else if (this.status === "PLAY2") {
-            this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman.override(this.color[0]));
+            //This if and else if is for the animation of the Pacman.
+            if (timeMod2 == 0){
+                this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform,
+                    this.materials.pacman.override(this.color[0]));
+            }
+            else if (timeMod2 == 1){
+                this.shapes.pacman.draw(context, program_state, this.pacman_transform,
+                    this.materials.pacman.override(this.color[0]));
+            }
             this.shapes.pacmanEyes.draw(context, program_state,
                 this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
@@ -952,7 +972,13 @@ export class Game extends Base_Scene {
         let TrPacman2Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman2Eye = Mat4.scale(.2, .2, .2);
 
-        this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        //This if and else if is for the animation of the Pacman.
+        if (timeMod2 == 0){
+            this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        }
+        else if (timeMod2 == 1){
+            this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        }
         this.shapes.pacmanEyes.draw(context, program_state,
             this.pacman_transform2.times(TrPacman2Eye1).times(ScPacman2Eye),
             this.materials.pacmanEyes);
@@ -961,9 +987,10 @@ export class Game extends Base_Scene {
             this.materials.pacmanEyes);
 
         let bean_count = 3;  // Put the number of beans wanna generate
-        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
+        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
+
 
         // ----------------- START STORING LOCATIONS (in arrays) --------------------
         // SYMMETRY: fairness in competition mode
