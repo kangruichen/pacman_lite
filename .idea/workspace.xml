@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Camera position adjusted">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
-    </list>
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Pacman have lives now. Eat no more than 2 poisonous beans." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +77,7 @@
       <workItem from="1678644848539" duration="4005000" />
       <workItem from="1678734823206" duration="5661000" />
       <workItem from="1678758542691" duration="1545000" />
-      <workItem from="1678761527238" duration="9387000" />
+      <workItem from="1678761527238" duration="9927000" />
     </task>
     <task id="LOCAL-00001" summary="Importing obj files is now possible">
       <created>1677814966639</created>
@@ -152,7 +149,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678741494257</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Pacman have lives now. Eat no more than 2 poisonous beans.">
+      <created>1678771273841</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1678771273841</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,6 +196,8 @@
     <MESSAGE value="Trivial stuff" />
     <MESSAGE value="Updated map, camera, pacman initial positions, shading" />
     <MESSAGE value="Updated UI page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated UI page" />
+    <MESSAGE value="B" />
+    <MESSAGE value="Pacman have lives now. Eat no more than 2 poisonous beans." />
+    <option name="LAST_COMMIT_MESSAGE" value="Pacman have lives now. Eat no more than 2 poisonous beans." />
   </component>
 </project>
