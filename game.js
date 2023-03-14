@@ -80,7 +80,8 @@ class Base_Scene extends Scene {
             pacmanMouthClose: new Shape_From_File("assets/pacmanMouthClose1.obj"),
             pacmanEyes: new Shape_From_File("assets/pacmanEyes2.obj"),
             bean: new Shape_From_File("assets/beanPixel8.obj"),
-            cherry: new Shape_From_File("assets/cherry.obj"),
+            cherryStem: new Shape_From_File("assets/cherryStem1.obj"),
+            cherrySphere: new Shape_From_File("assets/cherrySphere1.obj"),
             text: new Text_Line(35)
         };
 
@@ -97,8 +98,10 @@ class Base_Scene extends Scene {
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#000000"), specular: 0.6}),
             bean: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
-            cherry: new Material(new defs.Phong_Shader(),
-                {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
+            cherryStem: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#694E2A"), specular: 0.6}),
+            cherrySphere: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#E70035"), specular: 0.6}),
             text_image: new Material(new defs.Textured_Phong(1),
                 {ambient: 1, diffusivity: 0, texture: new Texture("assets/stars.png")}),
             start_page: new Material(new defs.Phong_Shader(),
@@ -140,6 +143,9 @@ class Base_Scene extends Scene {
 
         this.bean_location = [];
         this.bean_status = [];
+
+        this.cherry_location = [];
+        this.cherry_status = [];
 
         this.block_location = [];
 
@@ -1019,11 +1025,20 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 3;  // Put the number of beans wanna generate
+        let bean_count = 10;  // Put the number of beans generated
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
 
+
+        let cherry_count = 1;  // Put the number of cherries generated
+        let TrCherryStem = Mat4.translation(-23, 0, -6.2);
+        let TrCherrySphere = Mat4.translation(-23, 0, -5);
+        let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
+        let ScCherry = Mat4.scale(.75, .75, .75);
+        this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+        this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
+        model_transform = Mat4.identity();
 
         // ----------------- START STORING LOCATIONS (in arrays) --------------------
         // SYMMETRY: fairness in competition mode
