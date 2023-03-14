@@ -8,6 +8,10 @@ const {
     Vector, Vector3, vec, vec3, vec4, color, hex_color, Matrix, Mat4, Light, Shape, Material, Texture, Scene, Shader
 } = tiny;
 
+const blue = hex_color("#1a9ffa");
+
+const {Textured_Phong} = defs;
+
 class Cube extends Shape {
     constructor() {
         super("position", "normal",);
@@ -106,8 +110,9 @@ class Base_Scene extends Scene {
             text_image: new Material(new defs.Textured_Phong(1),
                 {ambient: 1, diffusivity: 0, texture: new Texture("assets/stars.png")}),
             start_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
                 ambient: 1,
-                texture: new Texture("assets/titleScreen5.png", "NEAREST")
+                texture: new Texture("assets/start.png", "NEAREST")
             })
         };
 
@@ -151,10 +156,23 @@ class Base_Scene extends Scene {
         this.bean_location = [];
         this.bean_status = [];
 
+        this.poison_location = [];
+        this.poison_status = [];
+
         this.cherry_location = [];
         this.cherry_status = [];
 
         this.block_location = [];
+
+        this.pac1_poison = [];
+        this.pac2_poison = [];
+        this.pac1_normal = [];
+        this.pac2_normal = [];
+
+        // Score board
+        this.total_score = 0;
+        this.score1 = 0;
+        this.score2 = 0;
 
         this.creation = true;
     }
@@ -231,17 +249,13 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
-            /*this.new_line();
-            this.live_string(box => box.textContent = "first block" + this.block_location.at(0) + ", 2nd block: " + this.block_location.at(1)
-                + ", 3rd block: " + this.block_location.at(2)  + ", 4th block: " + this.block_location.at(3) + ", 5th block: " + this.block_location.at(4) + ", 6th block: " + this.block_location.at(6));*/
-            this.key_triggered_button("Change Colors", ["c"], this.set_colors);
-            // Add a button for controlling the scene.
-            this.key_triggered_button("Outline", ["o"], () => {
-                this.outlined = !this.outlined;
-            });
-            this.key_triggered_button("Sit still", ["m"], () => {
-                this.hover = !this.hover;
-            });
+            this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #1 score: " + this.score1.toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #2 score: " + this.score2.toFixed(0));
+            this.new_line();
+
             this.countdown = 0;
             this.countdown2 = 0;
 
@@ -461,36 +475,17 @@ export class Game extends Base_Scene {
             this.paused = true;
             this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
             //this.initial_camera_location = Mat4.look_at(vec3(0, 2, 13), vec3(0, 0, 0), vec3(0, 1, 0));
-            let light_position = vec4(0, 20, -5, -1);
+            let light_position = vec4(0, -5, -5, -1);
             program_state.set_camera(this.initial_camera_location);
             program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
 
             let model_transform = Mat4.identity();
-
-            let TrPacman2Eye1Title = Mat4.translation(-0.2, 1, 0.05);
-            let TrPacman2Eye2Title = Mat4.translation(-0.2, -1, 0.05);
-            let ScPacman2EyeTitle = Mat4.scale(.2, .2, .2);
-
             model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
             model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+            this.shapes.pacman.draw(context, program_state, model_transform, this.materials.pacman);
 
-            let ScPacmanTitle = Mat4.scale(3, 3, 3);
-
-
-            this.shapes.pacman.draw(context, program_state, model_transform.times(ScPacmanTitle), this.materials.pacman);
-
-
-
-            this.shapes.pacmanEyes.draw(context, program_state,
-                model_transform.times(ScPacmanTitle).times(TrPacman2Eye1Title).times(ScPacman2EyeTitle),
-                this.materials.pacmanEyes);
-            this.shapes.pacmanEyes.draw(context, program_state,
-                model_transform.times(ScPacmanTitle).times(TrPacman2Eye2Title).times(ScPacman2EyeTitle),
-                this.materials.pacmanEyes);
-
-            //Text box in the title screen
-            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
-            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
+            //model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
             return;
         }
         if (this.paused) { return;}
@@ -736,144 +731,146 @@ export class Game extends Base_Scene {
         }
 
         // Draw pacman #1
-        if (this.up){
-            if (this.i1<10 && this.rotate === false) {
-                if (this.direction === "up") {
-                    this.i1 = this.i1 + 10;
-                }
-                if (this.direction === "down") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "right") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "left") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-            } else {
-                this.direction = "up";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac1_front-1.5 < this.block_location[i][1] && this.pac1_back > this.block_location[i][1] && this.pac1_right+1 > this.block_location[i][0] && this.pac1_left-1 < this.block_location[i][0]){
-                        judge = false;
-                        break;
+        if(this.pac1_poison.length<2) {
+            if (this.up) {
+                if (this.i1 < 10 && this.rotate === false) {
+                    if (this.direction === "up") {
+                        this.i1 = this.i1 + 10;
                     }
-                    i = i + 1;
-                }
+                    if (this.direction === "down") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "right") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "left") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                } else {
+                    this.direction = "up";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac1_front - 1.5 < this.block_location[i][1] && this.pac1_back > this.block_location[i][1] && this.pac1_right + 1 > this.block_location[i][0] && this.pac1_left - 1 < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
 
-                if(judge && this.pac1_front>-54.5) {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                    this.pac1_front = this.pac1_front - 0.03;
-                    this.pac1_back = this.pac1_back - 0.03;
+                    if (judge && this.pac1_front > -54.5) {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                        this.pac1_front = this.pac1_front - 0.03;
+                        this.pac1_back = this.pac1_back - 0.03;
+                    }
                 }
             }
-        }
-        if (this.down){
-            if (this.i1<10 && this.rotate === false) {
-                if (this.direction === "down") {
-                    this.i1 = this.i1 + 10;
-                }
-                if (this.direction === "up") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "right") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "left") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-            } else {
-                this.direction = "down";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac1_front < this.block_location[i][1] && this.pac1_back+1.5 > this.block_location[i][1] && this.pac1_right+1 > this.block_location[i][0] && this.pac1_left-1 < this.block_location[i][0]){
-                        judge = false;
-                        break;
+            if (this.down) {
+                if (this.i1 < 10 && this.rotate === false) {
+                    if (this.direction === "down") {
+                        this.i1 = this.i1 + 10;
                     }
-                    i = i + 1;
-                }
-                if(judge && this.pac1_back<-1.5) {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                    this.pac1_front = this.pac1_front + 0.03;
-                    this.pac1_back = this.pac1_back + 0.03;
+                    if (this.direction === "up") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "right") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "left") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                } else {
+                    this.direction = "down";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac1_front < this.block_location[i][1] && this.pac1_back + 1.5 > this.block_location[i][1] && this.pac1_right + 1 > this.block_location[i][0] && this.pac1_left - 1 < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    if (judge && this.pac1_back < -1.5) {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                        this.pac1_front = this.pac1_front + 0.03;
+                        this.pac1_back = this.pac1_back + 0.03;
+                    }
                 }
             }
-        }
-        if (this.left){
-            if (this.i1<10 && this.rotate === false) {
-                if (this.direction === "up") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "down") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "right") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "left") {
-                    this.i1 = this.i1 + 10;
-                }
-            } else {
-                this.direction = "left";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac1_front-1 < this.block_location[i][1] && this.pac1_back+1 > this.block_location[i][1] && this.pac1_right > this.block_location[i][0] && this.pac1_left-1.5 < this.block_location[i][0]){
-                        judge = false;
-                        break;
+            if (this.left) {
+                if (this.i1 < 10 && this.rotate === false) {
+                    if (this.direction === "up") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
                     }
-                    i = i + 1;
-                }
-                if (judge && this.pac1_left>-24.5) {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                    this.pac1_left = this.pac1_left - 0.03;
-                    this.pac1_right = this.pac1_right - 0.03;
+                    if (this.direction === "down") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "right") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "left") {
+                        this.i1 = this.i1 + 10;
+                    }
+                } else {
+                    this.direction = "left";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac1_front - 1 < this.block_location[i][1] && this.pac1_back + 1 > this.block_location[i][1] && this.pac1_right > this.block_location[i][0] && this.pac1_left - 1.5 < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    if (judge && this.pac1_left > -24.5) {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                        this.pac1_left = this.pac1_left - 0.03;
+                        this.pac1_right = this.pac1_right - 0.03;
+                    }
                 }
             }
-        }
-        if (this.right){
-            if (this.i1<10 && this.rotate === false) {
-                if (this.direction === "up") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "down") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "left") {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i1 = this.i1 + 1;
-                }
-                if (this.direction === "right") {
-                    this.i1 = this.i1 + 10;
-                }
-            } else {
-                this.direction = "right";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac1_front-1 < this.block_location[i][1] && this.pac1_back+1 > this.block_location[i][1] && this.pac1_right+1.5 > this.block_location[i][0] && this.pac1_left < this.block_location[i][0]){
-                        judge = false;
-                        break;
+            if (this.right) {
+                if (this.i1 < 10 && this.rotate === false) {
+                    if (this.direction === "up") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
                     }
-                    i = i + 1;
-                }
-                if (judge && this.pac1_right<24.5) {
-                    this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                    this.pac1_left = this.pac1_left + 0.03;
-                    this.pac1_right = this.pac1_right + 0.03;
+                    if (this.direction === "down") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "left") {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i1 = this.i1 + 1;
+                    }
+                    if (this.direction === "right") {
+                        this.i1 = this.i1 + 10;
+                    }
+                } else {
+                    this.direction = "right";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac1_front - 1 < this.block_location[i][1] && this.pac1_back + 1 > this.block_location[i][1] && this.pac1_right + 1.5 > this.block_location[i][0] && this.pac1_left < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    if (judge && this.pac1_right < 24.5) {
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
+                        this.pac1_left = this.pac1_left + 0.03;
+                        this.pac1_right = this.pac1_right + 0.03;
+                    }
                 }
             }
         }
@@ -929,146 +926,146 @@ export class Game extends Base_Scene {
         }
 
         // Draw pacman #2
-        if (this.up2){
-            if (this.i<10 && this.rotate2 === false) {
-                if (this.direction2 === "up") {
-                    this.i = this.i + 10;
-                }
-                if (this.direction2 === "down") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "right") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "left") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-            } else {
-                this.direction2 = "up";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac2_front-1.5 < this.block_location[i][1] && this.pac2_back > this.block_location[i][1] && this.pac2_right+1 > this.block_location[i][0] && this.pac2_left-1 < this.block_location[i][0]){
-                        judge = false;
-                        break;
+        if(this.pac2_poison.length<2) {
+            if (this.up2) {
+                if (this.i < 10 && this.rotate2 === false) {
+                    if (this.direction2 === "up") {
+                        this.i = this.i + 10;
                     }
-                    i = i + 1;
-                }
+                    if (this.direction2 === "down") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "right") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "left") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                } else {
+                    this.direction2 = "up";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac2_front - 1.5 < this.block_location[i][1] && this.pac2_back > this.block_location[i][1] && this.pac2_right + 1 > this.block_location[i][0] && this.pac2_left - 1 < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
 
-                if(judge && this.pac2_front>-54.5) {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                    this.pac2_front = this.pac2_front - 0.03;
-                    this.pac2_back = this.pac2_back - 0.03;
-                }
-            }
-        }
-        if (this.down2){
-            if (this.i<10 && this.rotate2 === false) {
-                if (this.direction2 === "down") {
-                    this.i = this.i + 10;
-                }
-                if (this.direction2 === "up") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "right") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "left") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-            } else {
-                this.direction2 = "down";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac2_front < this.block_location[i][1] && this.pac2_back+1.5 > this.block_location[i][1] && this.pac2_right+1 > this.block_location[i][0] && this.pac2_left-1 < this.block_location[i][0]){
-                        judge = false;
-                        break;
+                    if (judge && this.pac2_front > -54.5) {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                        this.pac2_front = this.pac2_front - 0.03;
+                        this.pac2_back = this.pac2_back - 0.03;
                     }
-                    i = i + 1;
-                }
-                if(judge && this.pac2_back<-1.5) {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                    this.pac2_front = this.pac2_front + 0.03;
-                    this.pac2_back = this.pac2_back + 0.03;
                 }
             }
-        }
-        if (this.left2){
-            if (this.i<10 && this.rotate2 === false)
-            {
-                if (this.direction2 === "up") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "down") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "right") {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                    this.i = this.i + 1;
-                }
-                if (this.direction2 === "left") {
-                    this.i = this.i + 10;
-                }
-            } else {
-                this.direction2 = "left";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac2_front-1 < this.block_location[i][1] && this.pac2_back+1 > this.block_location[i][1] && this.pac2_right > this.block_location[i][0] && this.pac2_left-1.5 < this.block_location[i][0]){
-                        judge = false;
-                        break;
+            if (this.down2) {
+                if (this.i < 10 && this.rotate2 === false) {
+                    if (this.direction2 === "down") {
+                        this.i = this.i + 10;
                     }
-                    i = i + 1;
-                }
-                if (judge && this.pac2_left>-24.5) {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                    this.pac2_left = this.pac2_left - 0.03;
-                    this.pac2_right = this.pac2_right - 0.03;
-                }
-            }
-        }
-        if (this.right2){
-            if (this.i<10 && this.rotate2 === false)
-            {
-                if (this.direction2 === "up") {
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
-                this.i = this.i + 1;
-            }
-            if (this.direction2 === "down") {
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
-                this.i = this.i + 1;
-            }
-            if (this.direction2 === "left") {
-                this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
-                this.i = this.i + 1;
-            }
-            if (this.direction2 === "right") {
-                this.i = this.i + 10;
-            }
-            } else {
-                this.direction2 = "right";
-                let i = 0;
-                let judge = true;
-                while (i<this.block_location.length){
-                    if (this.pac2_front-1 < this.block_location[i][1] && this.pac2_back+1 > this.block_location[i][1] && this.pac2_right+1.5 > this.block_location[i][0] && this.pac2_left < this.block_location[i][0]){
-                        judge = false;
-                        break;
+                    if (this.direction2 === "up") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i = this.i + 1;
                     }
-                    i = i + 1;
+                    if (this.direction2 === "right") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "left") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                } else {
+                    this.direction2 = "down";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac2_front < this.block_location[i][1] && this.pac2_back + 1.5 > this.block_location[i][1] && this.pac2_right + 1 > this.block_location[i][0] && this.pac2_left - 1 < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    if (judge && this.pac2_back < -1.5) {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                        this.pac2_front = this.pac2_front + 0.03;
+                        this.pac2_back = this.pac2_back + 0.03;
+                    }
                 }
-                if (judge && this.pac2_right < 24.5) {
-                    this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                    this.pac2_left = this.pac2_left + 0.03;
-                    this.pac2_right = this.pac2_right + 0.03;
+            }
+            if (this.left2) {
+                if (this.i < 10 && this.rotate2 === false) {
+                    if (this.direction2 === "up") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "down") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "right") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "left") {
+                        this.i = this.i + 10;
+                    }
+                } else {
+                    this.direction2 = "left";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac2_front - 1 < this.block_location[i][1] && this.pac2_back + 1 > this.block_location[i][1] && this.pac2_right > this.block_location[i][0] && this.pac2_left - 1.5 < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    if (judge && this.pac2_left > -24.5) {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                        this.pac2_left = this.pac2_left - 0.03;
+                        this.pac2_right = this.pac2_right - 0.03;
+                    }
+                }
+            }
+            if (this.right2) {
+                if (this.i < 10 && this.rotate2 === false) {
+                    if (this.direction2 === "up") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(-Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "down") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.05, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "left") {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.rotation(Math.PI * 0.1, 0, 1, 0));
+                        this.i = this.i + 1;
+                    }
+                    if (this.direction2 === "right") {
+                        this.i = this.i + 10;
+                    }
+                } else {
+                    this.direction2 = "right";
+                    let i = 0;
+                    let judge = true;
+                    while (i < this.block_location.length) {
+                        if (this.pac2_front - 1 < this.block_location[i][1] && this.pac2_back + 1 > this.block_location[i][1] && this.pac2_right + 1.5 > this.block_location[i][0] && this.pac2_left < this.block_location[i][0]) {
+                            judge = false;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    if (judge && this.pac2_right < 24.5) {
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
+                        this.pac2_left = this.pac2_left + 0.03;
+                        this.pac2_right = this.pac2_right + 0.03;
+                    }
                 }
             }
         }
@@ -1092,6 +1089,7 @@ export class Game extends Base_Scene {
             this.materials.pacmanEyes);
 
         let bean_count = 10;  // Put the number of beans generated
+        let poison_count = 3;
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
@@ -1113,11 +1111,22 @@ export class Game extends Base_Scene {
             let i = 0;
             let x = -23;  // right in the middle of gaps
             let z = -9;
+            let u = -15;
+            let v = -9;
             if (this.status === "PLAY") {
                 while (i < bean_count) {
                     this.bean_location[i] = [x, z];
                     this.bean_status[i] = true;
                     z = z - 3;
+                    i = i + 1;
+                }
+
+                i = 0;
+
+                while (i<poison_count){
+                    this.poison_location[i] = [u, v];
+                    this.poison_status[i] = true;
+                    v = v - 3;
                     i = i + 1;
                 }
             }
@@ -1800,54 +1809,57 @@ export class Game extends Base_Scene {
         if (this.status === "PLAY") {
             while (w < bean_count) {
                 if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
-                    this.bean_status[w] = false;
+                    this.bean_status[w] = 0;
                 }
                 if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
-                    this.bean_status[w] = false;
+                    this.bean_status[w] = 2;
                 }
-                if (this.bean_status[w]) {
+                if (this.bean_status[w] === true) {
                     model_transform = Mat4.identity();
                     model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
                     this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
                 }
                 w += 1;
             }
+            w = 0
+            while (w<poison_count){
+                if (this.pac1_front < this.poison_location[w][1] && this.pac1_back > this.poison_location[w][1] && this.pac1_right > this.poison_location[w][0] && this.pac1_left < this.poison_location[w][0]) {
+                    this.poison_status[w] = false;
+                    if(!this.pac1_poison.includes(w)&&!this.pac2_poison.includes(w))
+                    {
+                        this.pac1_poison.push(w);
+                    }
+                }
+                if (this.pac2_front < this.poison_location[w][1] && this.pac2_back > this.poison_location[w][1] && this.pac2_right > this.poison_location[w][0] && this.pac2_left < this.poison_location[w][0]) {
+                    this.poison_status[w] = false;
+                    if(!this.pac2_poison.includes(w)&&!this.pac1_poison.includes(w))
+                    {
+                        this.pac2_poison.push(w);
+                    }
+                }
+                if (this.poison_status[w]) {
+                    model_transform = Mat4.identity();
+                    model_transform = model_transform.times(Mat4.translation(this.poison_location[w][0], 0, this.poison_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean.override(blue));
+                }
+                w += 1;
+            }
         }
 
-
-        //Triangle_strip sample
-        //model_transform = model_transform.times(Mat4.translation(-8, 0, 0));
-        //this.shapes.strip.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[1]),"TRIANGLE_STRIP");
-
-        /*
-        let k = 0.025 * Math.PI;
-        let count = 0;
-        let a = 1;
-
-        while (count<7) {
-            model_transform = model_transform.times(Mat4.translation(-a, a*1.5, 0));
-            if (!this.hover) {
-                model_transform = model_transform.times(Mat4.rotation(-(Math.cos(clk) + 1) * k, 0, 0, 1));
-            }
-
-            model_transform = model_transform.times(Mat4.rotation(  Math.PI+k*2, 0, 0, 1));
-            model_transform = model_transform.times(Mat4.scale(1, 1.5 , 1));
-            model_transform = model_transform.times(Mat4.translation(-a, -a, 0));
-            if (!this.outlined) {
-                if (count % 2 != 0) {
-                    this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[count + 1]));
+        // Update player scores
+        if (this.status === "PLAY" || this.status === "PLAY2") {
+            this.score1 = 0;
+            this.score2 = 0;
+            for (let i = 0; i < bean_count; i++) {
+                if (this.bean_status[i] === 0) {
+                    this.score1 += 1;
                 }
-                else{
-                    this.shapes.strip.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[count + 1]),"TRIANGLE_STRIP");
+                if (this.bean_status[i] === 2) {
+                    this.score2 += 1;
                 }
             }
-            else{
-                this.shapes.outline.draw(context, program_state, model_transform, this.white,"LINES");
-            }
-            model_transform = model_transform.times(Mat4.scale(1, 1/1.5 , 1));
-            a = -a;
-            count += 1;
-        }*/
+        }
+        this.total_score = this.score1 + this.score2;
 
         return model_transform;
     }
