@@ -1,7 +1,7 @@
 import {defs, tiny} from './examples/common.js';
 import {Text_Line} from "./examples/text-demo.js";
+import {Obj_File_Demo} from './examples/obj-file-demo.js';
 import {Shape_From_File} from './examples/obj-file-demo.js';
-
 
 //This is the main file
 const {
@@ -11,6 +11,7 @@ const {
 const blue = hex_color("#1a9ffa");
 
 const {Textured_Phong} = defs;
+
 class Cube extends Shape {
     constructor() {
         super("position", "normal",);
@@ -62,7 +63,7 @@ class Cube_Single_Strip extends Shape {
 }
 
 
-export class Base_Scene extends Scene {
+class Base_Scene extends Scene {
     /**
      *  **Base_scene** is a Scene that can be added to any display canvas.
      *  Setup the shapes, materials, camera, and lighting here.
@@ -76,14 +77,17 @@ export class Base_Scene extends Scene {
         // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
             'cube': new Cube(),
+            box_start_page: new defs.Cube(),
             'outline': new Cube_Outline(),
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
             pacman: new Shape_From_File("assets/pacmanRotateY90.obj"),
+            pacmanMouthClose: new Shape_From_File("assets/pacmanMouthClose1.obj"),
             pacmanEyes: new Shape_From_File("assets/pacmanEyes2.obj"),
-            bean: new Shape_From_File("assets/beanPixel6.obj"),
-            cherry: new Shape_From_File("assets/cherry.obj"),
-            text: new Text_Line(35),
+            bean: new Shape_From_File("assets/beanPixel8.obj"),
+            cherryStem: new Shape_From_File("assets/cherryStem1.obj"),
+            cherrySphere: new Shape_From_File("assets/cherrySphere1.obj"),
+            text: new Text_Line(35)
         };
 
 
@@ -99,12 +103,17 @@ export class Base_Scene extends Scene {
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#000000"), specular: 0.6}),
             bean: new Material(new defs.Phong_Shader(),
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
-            cherry: new Material(new defs.Phong_Shader(),
-                {ambient: 0.2, diffusivity: 1, color: hex_color("#FFE333"), specular: 0.6}),
+            cherryStem: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#694E2A"), specular: 0.6}),
+            cherrySphere: new Material(new defs.Phong_Shader(),
+                {ambient: 0.2, diffusivity: 1, color: hex_color("#E70035"), specular: 0.6}),
             text_image: new Material(new defs.Textured_Phong(1),
                 {ambient: 1, diffusivity: 0, texture: new Texture("assets/stars.png")}),
-            start_page: new Material(new defs.Textured_Phong(1),
-                {ambient: 1, texture: new Texture("assets/rgb.png")}),
+            start_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
+                ambient: 1,
+                texture: new Texture("assets/start.png", "NEAREST")
+            })
         };
 
         // The white material and basic shader are used for drawing the outline.
@@ -143,15 +152,18 @@ export class Base_Scene extends Scene {
         this.bean_location = [];
         this.bean_status = [];
 
-        this.poison_status = [];
         this.poison_location = [];
+        this.poison_status = [];
+
+        this.cherry_location = [];
+        this.cherry_status = [];
 
         this.block_location = [];
 
-        this.creation = true;
-
         this.pac1_poison = [];
         this.pac2_poison = [];
+
+        this.creation = true;
     }
 
     display(context, program_state) {
@@ -170,7 +182,7 @@ export class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        const light_position = vec4(0, 5, -15, 1);
+        let light_position = vec4(0, 5, -15, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
@@ -209,7 +221,7 @@ export class Game extends Base_Scene {
     }
 
     make_control_panel() {
-        if(this.status == "PLAY") {
+        if(this.status === "PLAY" || this.status === "PLAY2") {
             // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
@@ -219,147 +231,17 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
-            this.live_string(box => box.textContent = "-Pacman2 poison length" + this.pac2_poison.length.toFixed(2));
-            this.live_string(box => box.textContent = "-Pacman1 poison length" + this.pac1_poison.length.toFixed(2));
-            this.countdown = 0;
-            this.countdown2 = 0;
-
-            // Directions for player #1
-            this.key_triggered_button("Move up", ["ArrowUp"], () => {
-                if (this.countdown === 0) {
-                    this.down = false;
-                    this.right = false;
-                    this.left = false;
-                    if (this.up === false) {
-                        this.countdown = 30;
-                    }
-                    this.up = true;
-                    this.i1 = 0;
-                }
-
+            /*this.new_line();
+            this.live_string(box => box.textContent = "first block" + this.block_location.at(0) + ", 2nd block: " + this.block_location.at(1)
+                + ", 3rd block: " + this.block_location.at(2)  + ", 4th block: " + this.block_location.at(3) + ", 5th block: " + this.block_location.at(4) + ", 6th block: " + this.block_location.at(6));*/
+            this.key_triggered_button("Change Colors", ["c"], this.set_colors);
+            // Add a button for controlling the scene.
+            this.key_triggered_button("Outline", ["o"], () => {
+                this.outlined = !this.outlined;
             });
-            this.key_triggered_button("Move down", ["ArrowDown"], () => {
-                if (this.countdown === 0) {
-                    this.up = false;
-                    this.right = false;
-                    this.left = false;
-                    if (this.down === false) {
-                        this.countdown = 30;
-                    }
-                    this.down = true;
-                    this.i1 = 0;
-                }
-
+            this.key_triggered_button("Sit still", ["m"], () => {
+                this.hover = !this.hover;
             });
-            this.key_triggered_button("Move left", ["ArrowLeft"], () => {
-                if (this.countdown === 0) {
-                    this.down = false;
-                    this.right = false;
-                    this.up = false;
-                    if (this.left === false) {
-                        this.countdown = 30;
-                    }
-                    this.left = true;
-                    this.i1 = 0;
-                }
-            });
-            this.key_triggered_button("Move right", ["ArrowRight"], () => {
-                if (this.countdown === 0) {
-                    if (this.right === false) {
-                        this.countdown = 30;
-                    }
-                    this.down = false;
-                    this.left = false;
-                    this.up = false;
-                    this.right = true;
-                    this.i1 = 0;
-                }
-            });
-
-            // Directions for player #2
-            this.key_triggered_button("Move up", ["w"], () => {
-                if (this.countdown2 === 0) {
-                    this.down2 = false;
-                    this.right2 = false;
-                    this.left2 = false;
-                    if (this.up2 === false) {
-                        this.countdown2 = 30;
-                    }
-                    this.up2 = true;
-                    this.i = 0;
-                }
-            });
-            this.key_triggered_button("Move down", ["s"], () => {
-                if (this.countdown2 === 0) {
-                    this.up2 = false;
-                    this.left2 = false;
-                    this.right2 = false;
-                    if (this.down2 === false) {
-                        this.countdown2 = 30;
-                    }
-                    this.down2 = true;
-                    this.i = 0;
-                }
-            });
-            this.key_triggered_button("Move left", ["a"], () => {
-                if (this.countdown2 === 0) {
-                    this.right2 = false;
-                    this.up2 = false;
-                    this.down2 = false;
-                    this.i = 0;
-                    if (this.left2 === false) {
-                        this.countdown2 = 30;
-                    }
-                    this.left2 = true;
-                }
-            });
-            this.key_triggered_button("Move right", ["d"], () => {
-                if (this.countdown2 === 0) {
-                    this.left2 = false;
-                    this.up2 = false;
-                    this.down2 = false;
-                    this.i = 0;
-                    if (this.right2 === false) {
-                        this.countdown2 = 30;
-                    }
-                    this.right2 = true;
-                }
-            });
-
-            // Quit the game
-            this.key_triggered_button("Quit", ["q"], () => {
-                this.status = "START";
-                this.paused = true;
-
-                // Remove buttons on START page
-                let buttons = document.getElementsByTagName('button');
-                while(buttons.length > 0){
-                    buttons[0].parentNode.removeChild(buttons[0]);
-                }
-                let live_strings = document.getElementsByClassName('live_string');
-                while(live_strings.length > 0){
-                    live_strings[0].parentNode.removeChild(live_strings[0]);
-                }
-                let new_lines = document.getElementsByTagName('br');
-                while(new_lines.length > 0){
-                    new_lines[0].parentNode.removeChild(new_lines[0]);
-                }
-
-                // Add main game buttons
-                this.make_control_panel();
-            });
-        }
-
-        else if(this.status == "PLAY2") {
-            // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
-            //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
-            this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
-            this.new_line();
-            this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
-                + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
-            this.new_line();
-            this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
-                + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
             this.countdown = 0;
             this.countdown2 = 0;
 
@@ -540,12 +422,42 @@ export class Game extends Base_Scene {
     }
 
     draw_box(context, program_state, model_transform) {
+        let clk = this.t = program_state.animation_time * Math.PI *2 / 1000;
+        if (clk == 0) {
+            this.color = [];
+            let cnt = 0;
+            while (cnt<8){
+                if (this.color.length >= 2 && this.color[0] === this.color[1]) {
+                    this.color.pop();
+                    this.color.push(color(Math.random(),
+                        Math.random(), Math.random(), 1.0));
+                }
+                else{
+                    this.color.push(color(Math.random(),
+                        Math.random(), Math.random(), 1.0));
+                    cnt = cnt+1
+                }
+            }
+        }
 
         const t = this.t = program_state.animation_time / 1000;
 
         // Set game status
         if(this.status == "START") {
             this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            //this.initial_camera_location = Mat4.look_at(vec3(0, 2, 13), vec3(0, 0, 0), vec3(0, 1, 0));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+            this.shapes.pacman.draw(context, program_state, model_transform, this.materials.pacman);
+
+            //model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
             return;
         }
         if (this.paused) { return;}
@@ -939,9 +851,20 @@ export class Game extends Base_Scene {
         let TrPacman1Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman1Eye = Mat4.scale(.2, .2, .2);
 
+        const timePacmanAnimation = program_state.animation_time / 300
+        let timePacmanAnimationInt = Math.floor(timePacmanAnimation);
+        let timeMod2 = timePacmanAnimationInt % 2;
+
         // Draw pacman depending on two modes
         if (this.status === "PLAY") {
-            this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+
+            //This if and else if is for the animation of the Pacman.
+            if (timeMod2 == 0){
+                this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+            }
+            else if (timeMod2 == 1){
+                this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman);
+            }
             this.shapes.pacmanEyes.draw(context, program_state,
                 this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
@@ -949,7 +872,15 @@ export class Game extends Base_Scene {
                 this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
         } else if (this.status === "PLAY2") {
-            this.shapes.pacman.draw(context, program_state, this.pacman_transform, this.materials.pacman.override(this.color[0]));
+            //This if and else if is for the animation of the Pacman.
+            if (timeMod2 == 0){
+                this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform,
+                    this.materials.pacman.override(this.color[0]));
+            }
+            else if (timeMod2 == 1){
+                this.shapes.pacman.draw(context, program_state, this.pacman_transform,
+                    this.materials.pacman.override(this.color[0]));
+            }
             this.shapes.pacmanEyes.draw(context, program_state,
                 this.pacman_transform.times(TrPacman1Eye1).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
@@ -1107,7 +1038,13 @@ export class Game extends Base_Scene {
         let TrPacman2Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman2Eye = Mat4.scale(.2, .2, .2);
 
-        this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        //This if and else if is for the animation of the Pacman.
+        if (timeMod2 == 0){
+            this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        }
+        else if (timeMod2 == 1){
+            this.shapes.pacman.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
+        }
         this.shapes.pacmanEyes.draw(context, program_state,
             this.pacman_transform2.times(TrPacman2Eye1).times(ScPacman2Eye),
             this.materials.pacmanEyes);
@@ -1115,10 +1052,20 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 0;  // Put the number of beans wanna generate
-        let poison_count = 0;
-        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 1, 0);
+        let bean_count = 10;  // Put the number of beans generated
+        let poison_count = 3;
+        let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
+        model_transform = Mat4.identity();
+
+
+        let cherry_count = 1;  // Put the number of cherries generated
+        let TrCherryStem = Mat4.translation(-23, 0, -6.2);
+        let TrCherrySphere = Mat4.translation(-23, 0, -5);
+        let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
+        let ScCherry = Mat4.scale(.75, .75, .75);
+        this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+        this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
         model_transform = Mat4.identity();
 
         // ----------------- START STORING LOCATIONS (in arrays) --------------------
@@ -1130,16 +1077,7 @@ export class Game extends Base_Scene {
             let z = -9;
             let u = -15;
             let v = -9;
-            if (this.status === "PLAY") {//register bean location
-
-                while (i<poison_count)
-                {
-                    this.poison_location[i] = [u, v];
-                    this.poison_status[i] = true;
-                    v = v-3;
-                    i = i + 1;
-                }
-                i = 0;
+            if (this.status === "PLAY") {
                 while (i < bean_count) {
                     this.bean_location[i] = [x, z];
                     this.bean_status[i] = true;
@@ -1147,11 +1085,16 @@ export class Game extends Base_Scene {
                     i = i + 1;
                 }
 
+                i = 0;
 
+                while (i<poison_count){
+                    this.poison_location[i] = [u, v];
+                    this.poison_status[i] = true;
+                    v = v - 3;
+                    i = i + 1;
+                }
             }
             else if (this.status === "PLAY2") {
-                ;
-
             }
 
             i = 0;
@@ -1808,13 +1751,26 @@ export class Game extends Base_Scene {
         // ----------------- END DRAWING BLOCKS --------------------
 
 
+        /*
+        //draw beans
+        this.bean_location.push([-10, -10]);
+        this.bean_status.push(true);
+        model_transform = model_transform.times(Mat4.translation(10, 0, -10));
 
+        if(this.pac1_front<this.bean_location[0][0] && this.pac1_back>this.bean_location[0][0] && this.pac1_right > this.bean_location[0][1] && this.pac1_left < this.bean_location[0][1])
+        {
+            this.bean_status[0] = false;
+        }
+
+        if(this.bean_status[0]) {
+            this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        }
+        */
 
 
         //draw beans
         let w = 0;
-        if (this.status === "PLAY") {//draw beans in real time
-
+        if (this.status === "PLAY") {
             while (w < bean_count) {
                 if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
                     this.bean_status[w] = false;
@@ -1826,13 +1782,10 @@ export class Game extends Base_Scene {
                     model_transform = Mat4.identity();
                     model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
                     this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-
                 }
                 w += 1;
             }
-            w = 0;
-
-
+            w = 0
             while (w<poison_count){
                 if (this.pac1_front < this.poison_location[w][1] && this.pac1_back > this.poison_location[w][1] && this.pac1_right > this.poison_location[w][0] && this.pac1_left < this.poison_location[w][0]) {
                     this.poison_status[w] = false;
@@ -1853,12 +1806,11 @@ export class Game extends Base_Scene {
                     model_transform = model_transform.times(Mat4.translation(this.poison_location[w][0], 0, this.poison_location[w][1]));
                     this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean.override(blue));
                 }
-                else{
-
-                }
                 w += 1;
             }
         }
+
+
 
 
         //Triangle_strip sample
@@ -1900,7 +1852,7 @@ export class Game extends Base_Scene {
 
     display(context, program_state) {
         super.display(context, program_state);
-        //const blue = hex_color("#1a9ffa");
+        const blue = hex_color("#1a9ffa");
         let model_transform = Mat4.identity();
         this.draw_box(context,program_state,model_transform);
 
