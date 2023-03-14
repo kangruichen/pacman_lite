@@ -118,6 +118,10 @@ class Base_Scene extends Scene {
         this.status = "START";
         this.paused = true;
 
+        // Timer
+        this.timerCount = 15;
+
+
         // Direction status
         this.up = true;
         this.down = this.left = this.right = false;
@@ -215,6 +219,13 @@ export class Game extends Base_Scene {
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
             this.new_line();
+            this.live_string(box => box.textContent = "Timer: " + this.timerCount.toFixed(2));
+            this.new_line();
+
+            if(this.timerCount <= 0){
+                this.live_string(box => box.textContent = "Time is Up!");
+                this.new_line();
+            }
             this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
             this.new_line();
@@ -364,9 +375,19 @@ export class Game extends Base_Scene {
         else if(this.status == "START") {
             this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
             this.new_line();
+
+            this.live_string(box => box.textContent = "You have 60 seconds to complete the game!");
+            this.new_line();
+
+            this.live_string(box => box.textContent = "Timer: 60");
+            this.new_line();
+
+
+
             this.key_triggered_button("Colab Mode", ["y"], () => {
                 this.status = "PLAY";
                 this.paused = false;
+
 
                 // Remove stuff on START page
                 let buttons = document.getElementsByTagName('button');
@@ -388,6 +409,7 @@ export class Game extends Base_Scene {
             this.key_triggered_button("Compete Mode", ["n"], () => {
                 this.status = "PLAY2";
                 this.paused = false;
+
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -430,6 +452,9 @@ export class Game extends Base_Scene {
         }
 
         const t = this.t = program_state.animation_time / 1000;
+        this.t = 0;
+
+
 
         // Set game status
         if(this.status == "START") {
@@ -860,6 +885,14 @@ export class Game extends Base_Scene {
         const timePacmanAnimation = program_state.animation_time / 300
         let timePacmanAnimationInt = Math.floor(timePacmanAnimation);
         let timeMod2 = timePacmanAnimationInt % 2;
+
+        //Timer
+        this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
+        if (this.timerCount <= 0){
+            this.timerCount = 0;
+            this.paused = true;
+        }
+
 
         // Draw pacman depending on two modes
         if (this.status === "PLAY") {
