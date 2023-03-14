@@ -73,6 +73,7 @@ class Base_Scene extends Scene {
         // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
             'cube': new Cube(),
+            box_start_page: new defs.Cube(),
             'outline': new Cube_Outline(),
             'strip': new Cube_Single_Strip(),
             sphere: new defs.Subdivision_Sphere(4),
@@ -104,8 +105,11 @@ class Base_Scene extends Scene {
                 {ambient: 0.2, diffusivity: 1, color: hex_color("#E70035"), specular: 0.6}),
             text_image: new Material(new defs.Textured_Phong(1),
                 {ambient: 1, diffusivity: 0, texture: new Texture("assets/stars.png")}),
-            start_page: new Material(new defs.Phong_Shader(),
-                {ambient: 1, texture: new Texture("assets/stars.png", "NEAREST")})
+            start_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
+                ambient: 1,
+                texture: new Texture("assets/start.png", "NEAREST")
+            })
         };
 
         // The white material and basic shader are used for drawing the outline.
@@ -168,7 +172,7 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        const light_position = vec4(0, 5, -15, 1);
+        let light_position = vec4(0, 5, -15, 1);
         program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
@@ -207,7 +211,7 @@ export class Game extends Base_Scene {
     }
 
     make_control_panel() {
-        if(this.status == "PLAY") {
+        if(this.status === "PLAY" || this.status === "PLAY2") {
             // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
@@ -431,8 +435,19 @@ export class Game extends Base_Scene {
         // Set game status
         if(this.status == "START") {
             this.paused = true;
-            model_transform = Mat4.identity().times(Mat4.translation(0, 0, -10)).times(Mat4.scale(10,10,10));
-            this.shapes.cube.draw(context, program_state, model_transform, this.materials.start_page);
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            //this.initial_camera_location = Mat4.look_at(vec3(0, 2, 13), vec3(0, 0, 0), vec3(0, 1, 0));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+            this.shapes.pacman.draw(context, program_state, model_transform, this.materials.pacman);
+
+            //model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
             return;
         }
         if (this.paused) { return;}
