@@ -113,6 +113,11 @@ class Base_Scene extends Scene {
                 color: hex_color("#000000"),
                 ambient: 1,
                 texture: new Texture("assets/titleScreen5.png", "NEAREST")
+            }),
+            timeIsUp_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
+                ambient: 1,
+                texture: new Texture("assets/TimeIsUpScreen.png", "NEAREST")
             })
         };
 
@@ -124,7 +129,8 @@ class Base_Scene extends Scene {
         this.paused = true;
 
         // Timer
-        this.timerCount = 15;
+        this.timerCount = 10;
+        this.timerCountShown = 10;
 
 
         // Direction status
@@ -194,8 +200,11 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        let light_position = vec4(0, 5, -15, 1);
-        program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+        let light_position = vec4(0, 200, -30, 1);
+        program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 50000)];
+
+        // let light_position2 = vec4(15, 5, -15, 1);
+        // program_state.lights = [new Light(light_position2, color(1, 1, 1, 1), 10000)];
     }
 }
 
@@ -238,7 +247,7 @@ export class Game extends Base_Scene {
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
             this.new_line();
-            this.live_string(box => box.textContent = "Timer: " + this.timerCount.toFixed(2));
+            this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
             this.new_line();
 
             if(this.timerCount <= 0){
@@ -399,7 +408,7 @@ export class Game extends Base_Scene {
 
 
 
-            this.key_triggered_button("Colab Mode", ["y"], () => {
+            this.key_triggered_button("Collab Mode", ["y"], () => {
                 this.status = "PLAY";
                 this.paused = false;
 
@@ -444,6 +453,64 @@ export class Game extends Base_Scene {
                 this.make_control_panel();
             });
 
+        }
+
+        else if(this.status == "TIMEISUP") {
+            this.live_string(box => box.textContent = "Time is Up!");
+            this.new_line();
+
+            this.live_string(box => box.textContent = "Thank you very much for playing!");
+            this.new_line();
+
+            this.live_string(box => box.textContent = "Timer: 0.00");
+            this.new_line();
+
+
+
+            this.key_triggered_button("Collab Mode", ["y"], () => {
+                this.status = "PLAY";
+                this.paused = false;
+
+
+                // Remove stuff on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
+
+                // Add stuff on PLAY page
+                this.make_control_panel();
+            });
+            this.key_triggered_button("Compete Mode", ["n"], () => {
+                this.status = "PLAY2";
+                this.paused = false;
+
+
+                // Remove buttons on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
+
+                // Add stuff on PLAY2 page
+                this.make_control_panel();
+            });
         }
     }
 
@@ -511,6 +578,26 @@ export class Game extends Base_Scene {
 
             //model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
             //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
+            return;
+        }
+        else if(this.status == "TIMEISUP") {
+            this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            //this.initial_camera_location = Mat4.look_at(vec3(0, 2, 13), vec3(0, 0, 0), vec3(0, 1, 0));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+
+            //Text box in the Time is Up screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.timeIsUp_page);
+
+
             return;
         }
         if (this.paused) { return;}
@@ -828,6 +915,8 @@ export class Game extends Base_Scene {
                     }
                 }
             }
+
+
             if (this.left) {
                 if (this.i1 < 10 && this.rotate === false) {
                     if (this.direction === "up") {
@@ -909,15 +998,19 @@ export class Game extends Base_Scene {
         let timeMod2 = timePacmanAnimationInt % 2;
 
         //Timer
+        this.timerCountShown = this.timerCountShown - program_state.animation_delta_time / 1000;
         this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
         if (this.timerCount <= 0){
-            this.timerCount = 0;
-            this.paused = true;
+            this.timerCountShown = 10;
+            this.timerCount = 10;
+            this.status = "TIMEISUP";
+            // this.paused = true;
         }
 
 
         // Draw pacman depending on two modes
         if (this.status === "PLAY") {
+
 
             //This if and else if is for the animation of the Pacman.
             if (timeMod2 == 0){
@@ -933,6 +1026,7 @@ export class Game extends Base_Scene {
                 this.pacman_transform.times(TrPacman1Eye2).times(ScPacman1Eye),
                 this.materials.pacmanEyes);
         } else if (this.status === "PLAY2") {
+
             //This if and else if is for the animation of the Pacman.
             if (timeMod2 == 0){
                 this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform,
