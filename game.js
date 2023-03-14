@@ -124,8 +124,7 @@ class Base_Scene extends Scene {
         this.paused = true;
 
         // Timer
-        this.timerCount = 15;
-
+        this.timerCount = 120;
 
         // Direction status
         this.up = true;
@@ -396,7 +395,6 @@ export class Game extends Base_Scene {
 
             this.live_string(box => box.textContent = "Timer: 60");
             this.new_line();
-
 
 
             this.key_triggered_button("Colab Mode", ["y"], () => {
@@ -898,6 +896,19 @@ export class Game extends Base_Scene {
                     }
                 }
             }
+            let pac2_center_x = (this.pac2_left + this.pac2_right)/2;
+            let pac2_center_z = (this.pac2_front + this.pac2_back)/2;
+            if (this.pac1_front < pac2_center_z && this.pac1_back > pac2_center_z && this.pac1_right > pac2_center_x && this.pac1_left < pac2_center_x) {
+                if (this.direction = "right"){
+                    this.direction = "left";
+                }
+                if (this.direction = "left"){
+                    this.direction = "right";
+                }
+                if (this.direction = "up"){
+                    this.direction = "down";
+                }
+            }
         }
 
         let TrPacman1Eye1 = Mat4.translation(-0.2, 1, 0.05);
@@ -1113,14 +1124,14 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 10;  // Put the number of beans generated
+        let bean_count = 56;  // Put the number of beans generated
         let poison_count = 3;
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
 
 
-        let cherry_count = 1;  // Put the number of cherries generated
+        let cherry_count = 6;  // Put the number of cherries generated
         //let TrCherryStem = Mat4.translation(-23, 0, -6.2);
         //let TrCherrySphere = Mat4.translation(-23, 0, -5);
         let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
@@ -1135,12 +1146,148 @@ export class Game extends Base_Scene {
         if(this.creation) {
             let i = 0;
             let x = -23;  // right in the middle of gaps
-            let z = -9;
+            let z = -3;
             let u = -15;
             let v = -9;
 
             // Store beans
             if (this.status === "PLAY") {
+                while (i < 5) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z - 6;
+                    i = i + 1;
+                }
+                z = -35;
+                while (i < 9) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z - 6;
+                    i = i + 1;
+                }
+                x = -19;
+                while (i < 12) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 6;
+                while (i < 14) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                x = -15;
+                z = -50;
+                while (i < 18) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 2;
+                while (i < 20) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                x = -9;
+                z = -53;
+                while (i < 22) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 6;
+                while (i < 25) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 2;
+                while (i < 27) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+
+                // Draw right side symmetrically
+                x = 23;
+                z = -3;
+                while (i < 32) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z - 6;
+                    i = i + 1;
+                }
+                z = -35;
+                while (i < 36) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z - 6;
+                    i = i + 1;
+                }
+                x = 19;
+                while (i < 39) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 6;
+                while (i < 41) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                x = 15;
+                z = -50;
+                while (i < 45) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 2;
+                while (i < 47) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                x = 9;
+                z = -53;
+                while (i < 49) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 6;
+                while (i < 52) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+                z += 2;
+                while (i < 54) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z + 6;
+                    i = i + 1;
+                }
+
+
+                x = 23;
+                z = -40;
                 while (i < bean_count) {
                     this.bean_location[i] = [x, z];
                     this.bean_status[i] = true;
@@ -1149,7 +1296,6 @@ export class Game extends Base_Scene {
                 }
 
                 i = 0;
-
                 while (i<poison_count){
                     this.poison_location[i] = [u, v];
                     this.poison_status[i] = true;
@@ -1166,14 +1312,76 @@ export class Game extends Base_Scene {
             z = -6.2;
             let x0 = -23;  // cherry sphere
             let z0 = -5;
+            while (i < 1) {
+                this.cherry_stem_location[i] = [x, z];
+                this.cherry_sphere_location[i] = [x0, z0];
+                this.cherry_status[i] = true;
+                z = z - 6;
+                z0 = z0 - 6;
+                i = i + 1;
+            }
+            x = -15;
+            z = -41.2;
+            x0 = -15;
+            z0 = -40;
+            while (i < 2) {
+                this.cherry_stem_location[i] = [x, z];
+                this.cherry_sphere_location[i] = [x0, z0];
+                this.cherry_status[i] = true;
+                z = z - 6;
+                z0 = z0 - 6;
+                i = i + 1;
+            }
+            x = -3;
+            z = -41.2;
+            x0 = -3;
+            z0 = -40;
+            while (i < 3) {
+                this.cherry_stem_location[i] = [x, z];
+                this.cherry_sphere_location[i] = [x0, z0];
+                this.cherry_status[i] = true;
+                z = z - 6;
+                z0 = z0 - 6;
+                i = i + 1;
+            }
+
+            // Symmetrically draw the right side
+            x = 23;
+            z = -6.2;
+            x0 = 23;
+            z0 = -5;
+            while (i < 4) {
+                this.cherry_stem_location[i] = [x, z];
+                this.cherry_sphere_location[i] = [x0, z0];
+                this.cherry_status[i] = true;
+                z = z - 6;
+                z0 = z0 - 6;
+                i = i + 1;
+            }
+            x = 15;
+            z = -41.2;
+            x0 = 15;
+            z0 = -40;
+            while (i < 5) {
+                this.cherry_stem_location[i] = [x, z];
+                this.cherry_sphere_location[i] = [x0, z0];
+                this.cherry_status[i] = true;
+                z = z - 6;
+                z0 = z0 - 6;
+                i = i + 1;
+            }
+            x = 3;
+            z = -41.2;
+            x0 = 3;
+            z0 = -40;
             while (i < cherry_count) {
                 this.cherry_stem_location[i] = [x, z];
                 this.cherry_sphere_location[i] = [x0, z0];
                 this.cherry_status[i] = true;
-                z = z - 3;
+                z = z - 6;
+                z0 = z0 - 6;
                 i = i + 1;
             }
-            i = 0;
 
             // Store walls
             i = 0;
@@ -1827,31 +2035,32 @@ export class Game extends Base_Scene {
 
         // ----------------- END DRAWING BLOCKS --------------------
         // Draw cherries
-        let w = 0;
-        let TrCherryStem = Mat4.identity();
-        let TrCherrySphere = Mat4.identity();
-        while (w < cherry_count) {
-            if (this.pac1_front < this.cherry_sphere_location[w][1] && this.pac1_back > this.cherry_sphere_location[w][1] && this.pac1_right > this.cherry_sphere_location[w][0] && this.pac1_left < this.cherry_sphere_location[w][0]) {
-                this.cherry_status[w] = 0;
+        if (this.status === "PLAY") {
+            let w = 0;
+            let TrCherryStem = Mat4.identity();
+            let TrCherrySphere = Mat4.identity();
+            while (w < cherry_count) {
+                if (this.pac1_front < this.cherry_sphere_location[w][1] && this.pac1_back > this.cherry_sphere_location[w][1] && this.pac1_right > this.cherry_sphere_location[w][0] && this.pac1_left < this.cherry_sphere_location[w][0]) {
+                    this.cherry_status[w] = 0;
+                }
+                if (this.pac2_front < this.cherry_sphere_location[w][1] && this.pac2_back > this.cherry_sphere_location[w][1] && this.pac2_right > this.cherry_sphere_location[w][0] && this.pac2_left < this.cherry_sphere_location[w][0]) {
+                    this.cherry_status[w] = 2;
+                }
+                if (this.cherry_status[w] === true) {
+                    TrCherryStem = Mat4.identity();
+                    TrCherrySphere = Mat4.identity();
+                    TrCherryStem = TrCherryStem.times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
+                    TrCherrySphere = TrCherrySphere.times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
+                    this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+                    this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
+                }
+                w += 1;
             }
-            if (this.pac2_front < this.cherry_sphere_location[w][1] && this.pac2_back > this.cherry_sphere_location[w][1] && this.pac2_right > this.cherry_sphere_location[w][0] && this.pac2_left < this.cherry_sphere_location[w][0]) {
-                this.cherry_status[w] = 2;
-            }
-            if (this.cherry_status[w] === true) {
-                TrCherryStem = Mat4.identity();
-                TrCherrySphere = Mat4.identity();
-                TrCherryStem = TrCherryStem.times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
-                TrCherrySphere = TrCherrySphere.times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
-                this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
-                this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
-            }
-            w += 1;
         }
 
-
-        w = 0;
         // Draw beans
         if (this.status === "PLAY") {
+            let w = 0;
             while (w < bean_count) {
                 if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
                     this.bean_status[w] = 0;
@@ -1862,7 +2071,7 @@ export class Game extends Base_Scene {
                 if (this.bean_status[w] === true) {
                     model_transform = Mat4.identity();
                     model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
-                    this.shapes.cherryStem.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
                 }
                 w += 1;
             }
@@ -1892,7 +2101,7 @@ export class Game extends Base_Scene {
         }
 
         // Update player scores
-        if (this.status === "PLAY" || this.status === "PLAY2") {
+        if (this.status === "PLAY") {
             this.score1 = 0;
             this.score2 = 0;
             for (let i = 0; i < bean_count; i++) {
