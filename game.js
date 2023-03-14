@@ -203,7 +203,8 @@ export class Game extends Base_Scene {
     make_control_panel() {
         if(this.status == "PLAY") {
             // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
-            this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
+            //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
+            this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
@@ -325,15 +326,11 @@ export class Game extends Base_Scene {
                     this.right2 = true;
                 }
             });
-        }
 
-        // Other temporary game status (default to one mode)
-        else if(this.status == "START") {
-            this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
-            this.new_line();
-            this.key_triggered_button("Colab Mode", ["y"], () => {
-                this.status = "PLAY";
-                this.paused = false;
+            // Quit the game
+            this.key_triggered_button("Quit", ["q"], () => {
+                this.status = "START";
+                this.paused = true;
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -344,8 +341,39 @@ export class Game extends Base_Scene {
                 while(live_strings.length > 0){
                     live_strings[0].parentNode.removeChild(live_strings[0]);
                 }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
 
                 // Add main game buttons
+                this.make_control_panel();
+            });
+        }
+
+        // Other temporary game status (default to one mode)
+        else if(this.status == "START") {
+            this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
+            this.new_line();
+            this.key_triggered_button("Colab Mode", ["y"], () => {
+                this.status = "PLAY";
+                this.paused = false;
+
+                // Remove stuff on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
+
+                // Add stuff on PLAY page
                 this.make_control_panel();
             });
             this.key_triggered_button("Compete Mode", ["n"], () => {
@@ -361,10 +389,15 @@ export class Game extends Base_Scene {
                 while(live_strings.length > 0){
                     live_strings[0].parentNode.removeChild(live_strings[0]);
                 }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
 
-                // Add main game buttons
+                // Add stuff on PLAY2 page
                 this.make_control_panel();
             });
+
         }
     }
 
@@ -999,11 +1032,15 @@ export class Game extends Base_Scene {
             let i = 0;
             let x = -23;  // right in the middle of gaps
             let z = -9;
-            while (i<bean_count) {
-                this.bean_location[i]=[x,z];
-                this.bean_status[i] = true;
-                z = z - 3;
-                i = i + 1;
+            if (this.status === "PLAY") {
+                while (i < bean_count) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z - 3;
+                    i = i + 1;
+                }
+            }
+            else if (this.status === "PLAY2") {
             }
 
             i = 0;
@@ -1679,21 +1716,22 @@ export class Game extends Base_Scene {
 
         //draw beans
         let w = 0;
-        while (w<bean_count) {
-            if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
-                this.bean_status[w] = false;
+        if (this.status === "PLAY") {
+            while (w < bean_count) {
+                if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = false;
+                }
+                if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = false;
+                }
+                if (this.bean_status[w]) {
+                    model_transform = Mat4.identity();
+                    model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+                }
+                w += 1;
             }
-            if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
-                this.bean_status[w] = false;
-            }
-            if(this.bean_status[w]) {
-                model_transform = Mat4.identity();
-                model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0],0,this.bean_location[w][1]));
-                this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-            }
-            w+=1;
         }
-
 
 
         //Triangle_strip sample
