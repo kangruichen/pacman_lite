@@ -155,7 +155,8 @@ class Base_Scene extends Scene {
         this.poison_location = [];
         this.poison_status = [];
 
-        this.cherry_location = [];
+        this.cherry_stem_location = [];
+        this.cherry_sphere_location = [];
         this.cherry_status = [];
 
         this.block_location = [];
@@ -1063,12 +1064,12 @@ export class Game extends Base_Scene {
 
 
         let cherry_count = 1;  // Put the number of cherries generated
-        let TrCherryStem = Mat4.translation(-23, 0, -6.2);
-        let TrCherrySphere = Mat4.translation(-23, 0, -5);
+        //let TrCherryStem = Mat4.translation(-23, 0, -6.2);
+        //let TrCherrySphere = Mat4.translation(-23, 0, -5);
         let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScCherry = Mat4.scale(.75, .75, .75);
-        this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
-        this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
+        //this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+        //this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
         model_transform = Mat4.identity();
 
         // ----------------- START STORING LOCATIONS (in arrays) --------------------
@@ -1080,6 +1081,8 @@ export class Game extends Base_Scene {
             let z = -9;
             let u = -15;
             let v = -9;
+
+            // Store beans
             if (this.status === "PLAY") {
                 while (i < bean_count) {
                     this.bean_location[i] = [x, z];
@@ -1100,6 +1103,22 @@ export class Game extends Base_Scene {
             else if (this.status === "PLAY2") {
             }
 
+            // Store cherries (same for both modes)
+            i = 0;
+            x = -23;  // cherry stem
+            z = -6.2;
+            let x0 = -23;  // cherry sphere
+            let z0 = -5;
+            while (i < cherry_count) {
+                this.cherry_stem_location[i] = [x, z];
+                this.cherry_sphere_location[i] = [x0, z0];
+                this.cherry_status[i] = true;
+                z = z - 3;
+                i = i + 1;
+            }
+            i = 0;
+
+            // Store walls
             i = 0;
             x = 0;
             z = -2;
@@ -1749,30 +1768,32 @@ export class Game extends Base_Scene {
         }
 
 
-
-
         // ----------------- END DRAWING BLOCKS --------------------
-
-
-        /*
-        //draw beans
-        this.bean_location.push([-10, -10]);
-        this.bean_status.push(true);
-        model_transform = model_transform.times(Mat4.translation(10, 0, -10));
-
-        if(this.pac1_front<this.bean_location[0][0] && this.pac1_back>this.bean_location[0][0] && this.pac1_right > this.bean_location[0][1] && this.pac1_left < this.bean_location[0][1])
-        {
-            this.bean_status[0] = false;
-        }
-
-        if(this.bean_status[0]) {
-            this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
-        }
-        */
-
-
-        //draw beans
+        // Draw cherries
         let w = 0;
+        let TrCherryStem = Mat4.identity();
+        let TrCherrySphere = Mat4.identity();
+        while (w < cherry_count) {
+            if (this.pac1_front < this.cherry_sphere_location[w][1] && this.pac1_back > this.cherry_sphere_location[w][1] && this.pac1_right > this.cherry_sphere_location[w][0] && this.pac1_left < this.cherry_sphere_location[w][0]) {
+                this.cherry_status[w] = 0;
+            }
+            if (this.pac2_front < this.cherry_sphere_location[w][1] && this.pac2_back > this.cherry_sphere_location[w][1] && this.pac2_right > this.cherry_sphere_location[w][0] && this.pac2_left < this.cherry_sphere_location[w][0]) {
+                this.cherry_status[w] = 2;
+            }
+            if (this.cherry_status[w] === true) {
+                TrCherryStem = Mat4.identity();
+                TrCherrySphere = Mat4.identity();
+                TrCherryStem = TrCherryStem.times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
+                TrCherrySphere = TrCherrySphere.times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
+                this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+                this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
+            }
+            w += 1;
+        }
+
+
+        w = 0;
+        // Draw beans
         if (this.status === "PLAY") {
             while (w < bean_count) {
                 if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
@@ -1784,7 +1805,7 @@ export class Game extends Base_Scene {
                 if (this.bean_status[w] === true) {
                     model_transform = Mat4.identity();
                     model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
-                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+                    this.shapes.cherryStem.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
                 }
                 w += 1;
             }
@@ -1824,6 +1845,12 @@ export class Game extends Base_Scene {
                 if (this.bean_status[i] === 2) {
                     this.score2 += 1;
                 }
+                if (this.cherry_status[i] === 0) {
+                    this.score1 += 3;
+                }
+                if (this.cherry_status[i] === 2) {
+                    this.score2 += 3;
+                }
             }
         }
         this.total_score = this.score1 + this.score2;
@@ -1836,6 +1863,5 @@ export class Game extends Base_Scene {
         const blue = hex_color("#1a9ffa");
         let model_transform = Mat4.identity();
         this.draw_box(context,program_state,model_transform);
-
     }
 }
