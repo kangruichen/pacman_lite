@@ -5,6 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Bean Animation Fixed. Pacman Animation implemented.">
+      <change afterPath="$PROJECT_DIR$/assets/titleScreen2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/titleScreen3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/titleScreen4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/titleScreen5.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
