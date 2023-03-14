@@ -112,7 +112,7 @@ class Base_Scene extends Scene {
             start_page: new Material(new defs.Textured_Phong(), {
                 color: hex_color("#000000"),
                 ambient: 1,
-                texture: new Texture("assets/start.png", "NEAREST")
+                texture: new Texture("assets/titleScreen5.png", "NEAREST")
             })
         };
 
@@ -480,9 +480,33 @@ export class Game extends Base_Scene {
             program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
 
             let model_transform = Mat4.identity();
+
+            let TrPacman2Eye1Title = Mat4.translation(-0.2, 1, 0.05);
+            let TrPacman2Eye2Title = Mat4.translation(-0.2, -1, 0.05);
+            let ScPacman2EyeTitle = Mat4.scale(.2, .2, .2);
             model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
             model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
-            this.shapes.pacman.draw(context, program_state, model_transform, this.materials.pacman);
+
+            let ScPacmanTitle = Mat4.scale(3, 3, 3);
+
+
+            this.shapes.pacman.draw(context, program_state, model_transform.times(ScPacmanTitle), this.materials.pacman);
+
+
+
+            this.shapes.pacmanEyes.draw(context, program_state,
+                model_transform.times(ScPacmanTitle).times(TrPacman2Eye1Title).times(ScPacman2EyeTitle),
+                this.materials.pacmanEyes);
+            this.shapes.pacmanEyes.draw(context, program_state,
+                model_transform.times(ScPacmanTitle).times(TrPacman2Eye2Title).times(ScPacman2EyeTitle),
+                this.materials.pacmanEyes);
+
+            //Text box in the title screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
+
+
+            // this.shapes.pacman.draw(context, program_state, model_transform, this.materials.pacman);
 
             //model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
             //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);

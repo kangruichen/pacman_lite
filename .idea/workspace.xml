@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Bean Animation Fixed. Pacman Animation implemented.">
-      <change afterPath="$PROJECT_DIR$/assets/titleScreen2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/titleScreen3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/titleScreen4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/titleScreen5.png" afterDir="false" />
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Timer Implemented">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -154,7 +150,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678762891804</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Timer Implemented">
+      <created>1678776166280</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1678776166280</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -194,6 +197,7 @@
     <MESSAGE value="Trivial stuff" />
     <MESSAGE value="Updated map, camera, pacman initial positions, shading" />
     <MESSAGE value="Bean Animation Fixed. Pacman Animation implemented." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bean Animation Fixed. Pacman Animation implemented." />
+    <MESSAGE value="Timer Implemented" />
+    <option name="LAST_COMMIT_MESSAGE" value="Timer Implemented" />
   </component>
 </project>
