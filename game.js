@@ -389,9 +389,9 @@ export class Game extends Base_Scene {
         else if(this.status == "START") {
             this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
             this.new_line();
-            this.live_string(box => box.textContent = "You have 60 seconds to complete the game!");
+            this.live_string(box => box.textContent = "You have 120 seconds to complete the game!");
             this.new_line();
-            this.live_string(box => box.textContent = "Timer: 60");
+            this.live_string(box => box.textContent = "Timer: 120");
             this.new_line();
 
             this.key_triggered_button("Collab Mode", ["y"], () => {
@@ -985,8 +985,8 @@ export class Game extends Base_Scene {
         this.timerCountShown = this.timerCountShown - program_state.animation_delta_time / 1000;
         this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
         if (this.timerCount <= 0){
-            this.timerCountShown = 10;
-            this.timerCount = 10;
+            this.timerCountShown = 120;
+            this.timerCount = 120;
             this.status = "TIMEISUP";
         }
 
