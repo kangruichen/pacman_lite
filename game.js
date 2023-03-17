@@ -111,6 +111,11 @@ class Base_Scene extends Scene {
                 color: hex_color("#000000"),
                 ambient: 1,
                 texture: new Texture("assets/TimeIsUpScreen.png", "NEAREST")
+            }),
+            paused_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
+                ambient: 1,
+                texture: new Texture("assets/pausedScreen1.png", "NEAREST")
             })
         };
 
@@ -119,6 +124,7 @@ class Base_Scene extends Scene {
 
         // Game status
         this.status = "START";
+        this.statusBeforePaused = "PAUSE";
         this.paused = true;
 
         // Timer
@@ -237,18 +243,17 @@ export class Game extends Base_Scene {
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
             this.new_line();
+            this.live_string(box => box.textContent = "Gather as much points as possible! Have Fun!");
+            this.new_line();
             this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
             this.new_line();
 
-            if(this.timerCount <= 0){
-                this.live_string(box => box.textContent = "Time is Up!");
-                this.new_line();
-            }
             this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
+            this.new_line();
             this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
             this.new_line();
 
@@ -355,6 +360,30 @@ export class Game extends Base_Scene {
                     }
                     this.right2 = true;
                 }
+            });
+
+            // Pause the game
+            this.key_triggered_button("Pause Game", ["p"], () => {
+                this.statusBeforePaused = this.status;
+                this.status = "PAUSE";
+                this.paused = true;
+
+                // Remove buttons on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
+
+                // Add main game buttons
+                this.make_control_panel();
             });
 
             // Quit the game
@@ -510,6 +539,30 @@ export class Game extends Base_Scene {
                 }
             });
 
+            // Pause the game
+            this.key_triggered_button("Pause Game", ["p"], () => {
+                this.statusBeforePaused = this.status;
+                this.status = "PAUSE";
+                this.paused = true;
+
+                // Remove buttons on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
+
+                // Add main game buttons
+                this.make_control_panel();
+            });
+
             // Quit the game
             this.key_triggered_button("Quit", ["q"], () => {
                 this.status = "START";
@@ -540,12 +593,14 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "You have 120 seconds to complete the game!");
             this.new_line();
-            this.live_string(box => box.textContent = "Timer: 120");
+            this.live_string(box => box.textContent = "Timer: 120.00");
             this.new_line();
 
             this.key_triggered_button("Collab Mode", ["y"], () => {
                 this.status = "PLAY";
                 this.paused = false;
+                this.timerCountShown = 120;
+                this.timerCount = 120;
 
                 // Remove stuff on START page
                 let buttons = document.getElementsByTagName('button');
@@ -567,6 +622,8 @@ export class Game extends Base_Scene {
             this.key_triggered_button("Compete Mode", ["n"], () => {
                 this.status = "PLAY2";
                 this.paused = false;
+                this.timerCountShown = 120;
+                this.timerCount = 120;
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -587,6 +644,62 @@ export class Game extends Base_Scene {
             });
         }
 
+        // PAUSE game status
+        else if(this.status == "PAUSE") {
+            this.live_string(box => box.textContent = "Game Paused!");
+            this.new_line();
+            this.live_string(box => box.textContent = "Press P to resume the game!");
+            this.new_line();
+
+            if(this.statusBeforePaused == "PLAY"){
+                this.key_triggered_button("Resume", ["p"], () => {
+                    this.status = "PLAY";
+                    this.paused = false;
+
+                    // Remove stuff on START page
+                    let buttons = document.getElementsByTagName('button');
+                    while(buttons.length > 0){
+                        buttons[0].parentNode.removeChild(buttons[0]);
+                    }
+                    let live_strings = document.getElementsByClassName('live_string');
+                    while(live_strings.length > 0){
+                        live_strings[0].parentNode.removeChild(live_strings[0]);
+                    }
+                    let new_lines = document.getElementsByTagName('br');
+                    while(new_lines.length > 0){
+                        new_lines[0].parentNode.removeChild(new_lines[0]);
+                    }
+
+                    // Add stuff on PLAY page
+                    this.make_control_panel();
+                });
+            }
+            else if(this.statusBeforePaused == "PLAY2") {
+                this.key_triggered_button("Resume", ["p"], () => {
+                    this.status = "PLAY2";
+                    this.paused = false;
+
+                    // Remove buttons on START page
+                    let buttons = document.getElementsByTagName('button');
+                    while (buttons.length > 0) {
+                        buttons[0].parentNode.removeChild(buttons[0]);
+                    }
+                    let live_strings = document.getElementsByClassName('live_string');
+                    while (live_strings.length > 0) {
+                        live_strings[0].parentNode.removeChild(live_strings[0]);
+                    }
+                    let new_lines = document.getElementsByTagName('br');
+                    while (new_lines.length > 0) {
+                        new_lines[0].parentNode.removeChild(new_lines[0]);
+                    }
+
+                    // Add stuff on PLAY2 page
+                    this.make_control_panel();
+                });
+            }
+        }
+
+        // TIMEISUP game status
         else if(this.status == "TIMEISUP") {
             this.live_string(box => box.textContent = "Time is Up!");
             this.new_line();
@@ -594,31 +707,18 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "Timer: 0.00");
             this.new_line();
+            this.new_line();
+            this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #1 score: " + this.score1.toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #2 score: " + this.score2.toFixed(0));
+            this.new_line();
 
-            this.key_triggered_button("Collab Mode", ["y"], () => {
-                this.status = "PLAY";
-                this.paused = false;
-
-                // Remove stuff on START page
-                let buttons = document.getElementsByTagName('button');
-                while(buttons.length > 0){
-                    buttons[0].parentNode.removeChild(buttons[0]);
-                }
-                let live_strings = document.getElementsByClassName('live_string');
-                while(live_strings.length > 0){
-                    live_strings[0].parentNode.removeChild(live_strings[0]);
-                }
-                let new_lines = document.getElementsByTagName('br');
-                while(new_lines.length > 0){
-                    new_lines[0].parentNode.removeChild(new_lines[0]);
-                }
-
-                // Add stuff on PLAY page
-                this.make_control_panel();
-            });
-            this.key_triggered_button("Compete Mode", ["n"], () => {
-                this.status = "PLAY2";
-                this.paused = false;
+            // Quit the game
+            this.key_triggered_button("Main Menu", ["q"], () => {
+                this.status = "START";
+                this.paused = true;
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -634,7 +734,7 @@ export class Game extends Base_Scene {
                     new_lines[0].parentNode.removeChild(new_lines[0]);
                 }
 
-                // Add stuff on PLAY2 page
+                // Add main game buttons
                 this.make_control_panel();
             });
         }
@@ -697,12 +797,6 @@ export class Game extends Base_Scene {
             //Text box in the title screen
             model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
             this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
-
-
-            // this.shapes.pacman.draw(context, program_state, model_transform, this.materials.pacman);
-
-            //model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
-            //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
             return;
         }
         else if(this.status == "TIMEISUP") {
@@ -719,6 +813,23 @@ export class Game extends Base_Scene {
             // Text box in the Time is Up screen
             model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
             this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.timeIsUp_page);
+
+            return;
+        }
+        else if(this.status == "PAUSE") {
+            this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+
+            // Text box in the Time is Up screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.paused_page);
 
             return;
         }
@@ -1126,17 +1237,33 @@ export class Game extends Base_Scene {
         let TrPacman1Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman1Eye = Mat4.scale(.2, .2, .2);
 
+        //Timer for pacman animation
         const timePacmanAnimation = program_state.animation_time / 300
         let timePacmanAnimationInt = Math.floor(timePacmanAnimation);
         let timeMod2 = timePacmanAnimationInt % 2;
 
-        //Timer
+        //Timer as a whole
         this.timerCountShown = this.timerCountShown - program_state.animation_delta_time / 1000;
         this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
         if (this.timerCount <= 0){
-            this.timerCountShown = 120;
-            this.timerCount = 120;
             this.status = "TIMEISUP";
+            this.timerCountShown = 0;
+            this.timerCount = 0;
+
+            let buttons = document.getElementsByTagName('button');
+            while(buttons.length > 0){
+                buttons[0].parentNode.removeChild(buttons[0]);
+            }
+            let live_strings = document.getElementsByClassName('live_string');
+            while(live_strings.length > 0){
+                live_strings[0].parentNode.removeChild(live_strings[0]);
+            }
+            let new_lines = document.getElementsByTagName('br');
+            while(new_lines.length > 0){
+                new_lines[0].parentNode.removeChild(new_lines[0]);
+            }
+
+            this.make_control_panel();
         }
 
         // Draw pacman depending on two modes
