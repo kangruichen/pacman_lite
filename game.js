@@ -1463,14 +1463,17 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 58;  // Put the number of beans generated
-        let poison_count = 9;
+        let bean_count1 = 58;  // Put the number of beans generated
+        let poison_count1 = 9;
+        let bean_count2 = 90;
+        let poison_count2 = 13;
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
 
 
-        let cherry_count = 8;  // Put the number of cherries generated
+        let cherry_count1 = 8;  // Put the number of cherries generated
+        let cherry_count2 = 8;
         //let TrCherryStem = Mat4.translation(-23, 0, -6.2);
         //let TrCherrySphere = Mat4.translation(-23, 0, -5);
         let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
@@ -1483,7 +1486,7 @@ export class Game extends Base_Scene {
         if(this.creation) {
             let i = 0;
             let x = -23;  // right in the middle of gaps
-            let z = -3;
+            let z = -9;
             let u = -15;
             let v = -9;
 
@@ -1639,6 +1642,325 @@ export class Game extends Base_Scene {
 
             }
             else if (this.status === "PLAY2") {
+                while (i < 4) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                z = z-2;
+                while (i < 7) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                this.poison_location[0] = [x,z];
+                this.poison_status[0] = true;
+                x = x+5;
+
+                while (i < 12) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+5;
+                    i = i+1;
+                }
+
+                x = x-1;
+
+                while (i < 16) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+4;
+                    i = i+1;
+                }
+
+                this.poison_location[1] = [x,z];
+                this.poison_status[1] = true;
+
+                z = z+6;
+
+                while (i < 19) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+                z = z+1;
+
+                this.bean_location[i] = [x,z];
+                this.bean_status[i] = true;
+                z = z+6;
+                i = i+1;
+
+                z = z+1;
+
+                this.poison_location[2] = [x,z];
+                this.poison_status[2] = true;
+
+                z = z+6;
+
+                while (i < 22) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+
+                while (i < 28) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+                this.poison_location[3] = [x,z];
+                this.poison_status[3] = true;
+                x = x-4;
+
+                while (i < 31) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+                while (i < 35) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                z = z-1;
+
+                this.poison_location[4] = [x,z];
+                this.poison_status[4] = true;
+
+                z = z-7;
+
+                while (i < 37) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+                x = x-1;
+
+                while (i < 43) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+4;
+                    i = i+1;
+                }
+
+                //place cherry#1
+
+                while (i < 47) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+4;
+                    i = i+1;
+                }
+
+                this.poison_location[5] = [x,z];
+                this.poison_status[5] = true;
+                x = x-4;
+
+                z = z+6;
+
+                while (i < 49) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+
+                z = z+2;
+
+                this.poison_location[6] = [x,z];
+                this.poison_status[6] = true;
+
+                z = z+6;
+
+                while (i < 51) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+
+                while (i < 59) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+
+
+                while (i < 64) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                x = x+1;
+
+                //place cherry#2
+
+
+                z = z-2;
+
+                while (i < 70) {
+                    if (i === 65)
+                    {
+                        this.poison_location[7] = [x,z];
+                        this.poison_status[7] = true;
+                        x = x+4;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    x = x+4;
+                    i = i+1;
+                }
+
+
+
+                while (i < 73) {
+                    if (i === 72)
+                    {
+                        this.poison_location[8] = [x,z];
+                        this.poison_status[8] = true;
+                        z = z+6;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    z = z+6;
+                    i = i+1;
+                }
+
+                //place cherry#3
+                z = z+2;
+
+                //x = x-4;
+
+                while (i < 78) {
+                    if (i === 76)
+                    {
+                        this.poison_location[9] = [x,z];
+                        this.poison_status[9] = true;
+                        x = x-4;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    x = x-4;
+                    i = i+1;
+                }
+
+                while (i < 80) {
+                    if (i === 79)
+                    {
+                        this.poison_location[10] = [x,z];
+                        this.poison_status[10] = true;
+                        z = z-6;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    z = z-6;
+                    i = i+1;
+                }
+
+                while (i < 84) {
+                    if (i === 83)
+                    {
+                        this.poison_location[11] = [x,z];
+                        this.poison_status[11] = true;
+                        x = x+4;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    x = x+4;
+                    i = i+1;
+                }
+
+                while (i < 86) {
+                    if (i === 85)
+                    {
+                        this.poison_location[12] = [x,z];
+                        this.poison_status[12] = true;
+                        z = z+6;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    z = z+6;
+                    i = i+1;
+                }
+
+
+                while (i < bean_count2) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+                x = x+4;
+                z = z-6;
+
+
+
+
+                i = 13;
+                while(i<poison_count2){
+                    this.poison_location[i] = [x, z];
+                    this.poison_status[i] = true;
+                    z = z - 6;
+                    i = i + 1;
+                }
+                // add cherries
+                this.cherry_stem_location[0] = [-2, -21.2];
+                this.cherry_sphere_location[0] = [-2, -20];
+                this.cherry_status[0] = true;
+
+                this.cherry_stem_location[1] = [2, -21.2];
+                this.cherry_sphere_location[1] = [2, -20];
+                this.cherry_status[1] = true;
+
+                this.cherry_stem_location[2] = [6, -21.2];
+                this.cherry_sphere_location[2] = [6, -20];
+                this.cherry_status[2] = true;
+
+                this.cherry_stem_location[3] = [-6, -21.2];
+                this.cherry_sphere_location[3] = [-6, -20];
+                this.cherry_status[3] = true;
             }
 
             // Store cherries (same for both modes)
@@ -1709,7 +2031,7 @@ export class Game extends Base_Scene {
             z = -41.2;
             x0 = 3;
             z0 = -40;
-            while (i < cherry_count) {
+            while (i < cherry_count1) {
                 this.cherry_stem_location[i] = [x, z];
                 this.cherry_sphere_location[i] = [x0, z0];
                 this.cherry_status[i] = true;
@@ -2380,7 +2702,7 @@ export class Game extends Base_Scene {
             let w = 0;
             let TrCherryStem = Mat4.identity();
             let TrCherrySphere = Mat4.identity();
-            while (w < cherry_count) {
+            while (w < cherry_count1) {
                 if (this.pac1_front < this.cherry_sphere_location[w][1] && this.pac1_back > this.cherry_sphere_location[w][1] && this.pac1_right > this.cherry_sphere_location[w][0] && this.pac1_left < this.cherry_sphere_location[w][0]) {
                     this.cherry_status[w] = 0;
                 }
@@ -2398,11 +2720,67 @@ export class Game extends Base_Scene {
                 w += 1;
             }
         }
+        if (this.status === "PLAY2") {
+            let w = 0;
+            let TrCherryStem = Mat4.identity();
+            let TrCherrySphere = Mat4.identity();
+            while (w < cherry_count2) {
+                if (this.cherry_status[w] === true) {
+                    TrCherryStem = Mat4.identity().times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
+                    TrCherrySphere = Mat4.identity().times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
+                    this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+                    this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
+                }
+                w += 1;
+            }
+        }
+        if(this.status === "PLAY2"){
+            let w = 0;
+            while (w < bean_count2) {
+                if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = 0;
+                }
+                if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = 2;
+                }
+                if (this.bean_status[w] === true) {
+                    model_transform = Mat4.identity();
+                    model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+                }
+                w += 1;
+            }
+            w = 0
+            while (w<poison_count2){
+                if (this.pac1_front < this.poison_location[w][1] && this.pac1_back > this.poison_location[w][1] && this.pac1_right > this.poison_location[w][0] && this.pac1_left < this.poison_location[w][0]) {
+                    this.poison_status[w] = false;
+                    if(!this.pac1_poison.includes(w)&&!this.pac2_poison.includes(w))
+                    {
+                        this.pac1_poison.push(w);
+                    }
+                }
+                if (this.pac2_front < this.poison_location[w][1] && this.pac2_back > this.poison_location[w][1] && this.pac2_right > this.poison_location[w][0] && this.pac2_left < this.poison_location[w][0]) {
+                    this.poison_status[w] = false;
+                    if(!this.pac2_poison.includes(w)&&!this.pac1_poison.includes(w))
+                    {
+                        this.pac2_poison.push(w);
+                    }
+                }
+                if (this.poison_status[w]) {
+                    model_transform = Mat4.identity();
+                    model_transform = model_transform.times(Mat4.translation(this.poison_location[w][0], 0, this.poison_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean.override(blue));
+                }
+                w += 1;
+            }
+
+
+        }
 
         // Draw beans (collab mode)
         if (this.status === "PLAY") {
             let w = 0;
-            while (w < bean_count/2) {
+            while (w < bean_count1/2) {
                 if (this.pac1_front < this.pac1_bean_location[w][1] && this.pac1_back > this.pac1_bean_location[w][1] && this.pac1_right > this.pac1_bean_location[w][0] && this.pac1_left < this.pac1_bean_location[w][0]) {
                     this.pac1_bean_status[w] = false;
                 }
@@ -2423,7 +2801,7 @@ export class Game extends Base_Scene {
             }
 
             w = 0
-            while (w<poison_count){
+            while (w<poison_count1){
                 if (this.pac1_front < this.poison_location[w][1] && this.pac1_back > this.poison_location[w][1] && this.pac1_right > this.poison_location[w][0] && this.pac1_left < this.poison_location[w][0]) {
                     this.poison_status[w] = false;
                     if(!this.pac1_poison.includes(w)&&!this.pac2_poison.includes(w)) {
@@ -2449,7 +2827,7 @@ export class Game extends Base_Scene {
         if (this.status === "PLAY") {
             this.score1 = 0;
             this.score2 = 0;
-            for (let i = 0; i < bean_count/2; i++) {
+            for (let i = 0; i < bean_count1/2; i++) {
                 if (this.pac1_bean_status[i] === false) {
                     this.score1 += 1;
                 }
@@ -2457,7 +2835,27 @@ export class Game extends Base_Scene {
                     this.score2 += 1;
                 }
             }
-            for (let i = 0; i < cherry_count; i++) {
+            for (let i = 0; i < cherry_count1; i++) {
+                if (this.cherry_status[i] === 0) {
+                    this.score1 += 3;
+                }
+                if (this.cherry_status[i] === 2) {
+                    this.score2 += 3;
+                }
+            }
+        }
+        else if (this.status === "PLAY2") {
+            this.score1 = 0;
+            this.score2 = 0;
+            for (let i = 0; i < bean_count2; i++) {
+                if (this.bean_status[i] === false) {
+                    this.score1 += 1;
+                }
+                if (this.bean_status[i] === false) {
+                    this.score2 += 1;
+                }
+            }
+            for (let i = 0; i < cherry_count2; i++) {
                 if (this.cherry_status[i] === 0) {
                     this.score1 += 3;
                 }
