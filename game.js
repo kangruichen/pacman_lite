@@ -257,6 +257,10 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
             this.new_line();
+            this.live_string(box => box.textContent = "-Player #1 life: " + (2-this.pac1_poison.length).toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #2 life: " + (2-this.pac2_poison.length).toFixed(0));
+            this.new_line();
 
             /*this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
@@ -426,6 +430,10 @@ export class Game extends Base_Scene {
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
             this.new_line();
             this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #1 life: " + (2-this.pac1_poison.length).toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #2 life: " + (2-this.pac2_poison.length).toFixed(0));
             this.new_line();
 
             if(this.timerCount <= 0){
