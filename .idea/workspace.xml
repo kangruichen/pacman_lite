@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="resolved conflicts">
-      <change afterPath="$PROJECT_DIR$/assets/pausedScreen.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/pausedScreen1.png" afterDir="false" />
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -216,14 +215,7 @@
       <option name="project" value="LOCAL" />
       <updated>1679031031612</updated>
     </task>
-    <task id="LOCAL-00018" summary="resolved conflicts">
-      <created>1679032459896</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1679032459896</updated>
-    </task>
-    <option name="localTasksCounter" value="19" />
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,19 +262,6 @@
     <MESSAGE value="added map for colab mode" />
     <MESSAGE value="added time is up screen" />
     <MESSAGE value="changed collab mode map" />
-    <MESSAGE value="resolved conflicts" />
-    <option name="LAST_COMMIT_MESSAGE" value="resolved conflicts" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/game.js</url>
-          <line>1504</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <option name="LAST_COMMIT_MESSAGE" value="changed collab mode map" />
   </component>
 </project>
