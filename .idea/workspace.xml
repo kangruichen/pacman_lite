@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="added score board">
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="added time is up screen">
+      <change afterPath="$PROJECT_DIR$/assets/pausedScreen.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/pausedScreen1.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -95,6 +97,7 @@
       <workItem from="1678644848539" duration="4005000" />
       <workItem from="1678734823206" duration="5661000" />
       <workItem from="1678758542691" duration="7023000" />
+      <workItem from="1679021439081" duration="7971000" />
     </task>
     <task id="LOCAL-00001" summary="Importing obj files is now possible">
       <created>1677814966639</created>
@@ -201,7 +204,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678805596130</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added time is up screen">
+      <created>1679021564873</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1679021564873</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -246,6 +256,7 @@
     <MESSAGE value="added score board" />
     <MESSAGE value="added cherry collision &amp; score" />
     <MESSAGE value="added map for colab mode" />
-    <option name="LAST_COMMIT_MESSAGE" value="added map for colab mode" />
+    <MESSAGE value="added time is up screen" />
+    <option name="LAST_COMMIT_MESSAGE" value="added time is up screen" />
   </component>
 </project>
