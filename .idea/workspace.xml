@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="resolved conflicts">
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="done with both modes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -215,7 +215,14 @@
       <option name="project" value="LOCAL" />
       <updated>1679031031612</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="done with both modes">
+      <created>1679036857000</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1679036857000</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -262,6 +269,7 @@
     <MESSAGE value="added map for colab mode" />
     <MESSAGE value="added time is up screen" />
     <MESSAGE value="changed collab mode map" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed collab mode map" />
+    <MESSAGE value="done with both modes" />
+    <option name="LAST_COMMIT_MESSAGE" value="done with both modes" />
   </component>
 </project>

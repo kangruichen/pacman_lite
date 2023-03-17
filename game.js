@@ -116,6 +116,16 @@ class Base_Scene extends Scene {
                 color: hex_color("#000000"),
                 ambient: 1,
                 texture: new Texture("assets/pausedScreen1.png", "NEAREST")
+            }),
+            collab_fail_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
+                ambient: 1,
+                texture: new Texture("assets/targetScoreNotReachScreen.png", "NEAREST")
+            }),
+            collab_success_page: new Material(new defs.Textured_Phong(), {
+                color: hex_color("#000000"),
+                ambient: 1,
+                texture: new Texture("assets/targetScoreReachScreen.png", "NEAREST")
             })
         };
 
@@ -128,8 +138,8 @@ class Base_Scene extends Scene {
         this.paused = true;
 
         // Timer
-        this.timerCount = 120;
-        this.timerCountShown = 120;
+        this.timerCount = 10;
+        this.timerCountShown = 10;
 
         // Direction status
         this.up = true;
@@ -598,8 +608,8 @@ export class Game extends Base_Scene {
             this.key_triggered_button("Collab Mode", ["y"], () => {
                 this.status = "PLAY";
                 this.paused = false;
-                this.timerCountShown = 120;
-                this.timerCount = 120;
+                this.timerCountShown = 10;
+                this.timerCount = 10;
 
                 // Remove stuff on START page
                 let buttons = document.getElementsByTagName('button');
@@ -621,8 +631,8 @@ export class Game extends Base_Scene {
             this.key_triggered_button("Compete Mode", ["n"], () => {
                 this.status = "PLAY2";
                 this.paused = false;
-                this.timerCountShown = 120;
-                this.timerCount = 120;
+                this.timerCountShown = 10;
+                this.timerCount = 10;
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -699,7 +709,7 @@ export class Game extends Base_Scene {
         }
 
         // TIMEISUP game status
-        else if(this.status == "TIMEISUP") {
+        else if(this.status === "TIMEISUP" || this.status === "PLAYFAIL" || this.status === "PLAYSUCCESS") {
             this.live_string(box => box.textContent = "Time is Up!");
             this.new_line();
             this.live_string(box => box.textContent = "Thank you very much for playing!");
@@ -737,6 +747,7 @@ export class Game extends Base_Scene {
                 this.make_control_panel();
             });
         }
+
     }
 
     draw_box(context, program_state, model_transform) {
@@ -815,7 +826,7 @@ export class Game extends Base_Scene {
 
             return;
         }
-        else if(this.status == "PAUSE") {
+        else if(this.status === "PAUSE") {
             this.paused = true;
             this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
             let light_position = vec4(0, -5, -5, -1);
@@ -832,6 +843,39 @@ export class Game extends Base_Scene {
 
             return;
         }
+        else if (this.status === "PLAYFAIL") {
+            this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+
+            // Text box in the Time is Up screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.collab_fail_page);
+            return;
+        }
+        else if (this.status === "PLAYSUCCESS") {
+            this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+
+            // Text box in the Time is Up screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.collab_success_page);
+            return;
+        }
+
         if (this.paused) { return;}
 
         model_transform = Mat4.identity();
@@ -1241,9 +1285,19 @@ export class Game extends Base_Scene {
         let timePacmanAnimationInt = Math.floor(timePacmanAnimation);
         let timeMod2 = timePacmanAnimationInt % 2;
 
-        //Timer as a whole
+        // Set collab mode end page after timer's up
         this.timerCountShown = this.timerCountShown - program_state.animation_delta_time / 1000;
         this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
+        if (this.status === "PLAY" && this.timerCount <= 0){
+            if (this.total_score >= 1) {
+                this.status = "PLAYSUCCESS";
+            } else {
+                this.status = "PLAYFAIL";
+            }
+            return;
+        }
+
+        //Timer as a whole
         if (this.timerCount <= 0){
             this.status = "TIMEISUP";
             this.timerCountShown = 0;
@@ -2875,6 +2929,7 @@ export class Game extends Base_Scene {
             }
         }
         this.total_score = this.score1 + this.score2;
+
 
         return model_transform;
     }
