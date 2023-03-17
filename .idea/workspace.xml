@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="done with both modes">
+    <list default="true" id="f42404c7-e34c-4b2d-9496-453fc933a620" name="Changes" comment="Add Pause option, improved control panel, upgrade overall maneuver of the screens">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game.js" beforeDir="false" afterPath="$PROJECT_DIR$/game.js" afterDir="false" />
     </list>
@@ -16,6 +16,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -95,6 +96,7 @@
       <workItem from="1678734823206" duration="5661000" />
       <workItem from="1678758542691" duration="7023000" />
       <workItem from="1679021439081" duration="7971000" />
+      <workItem from="1679037348768" duration="962000" />
     </task>
     <task id="LOCAL-00001" summary="Importing obj files is now possible">
       <created>1677814966639</created>
@@ -208,21 +210,7 @@
       <option name="project" value="LOCAL" />
       <updated>1679021564873</updated>
     </task>
-    <task id="LOCAL-00017" summary="changed collab mode map">
-      <created>1679031031612</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1679031031612</updated>
-    </task>
-    <task id="LOCAL-00018" summary="done with both modes">
-      <created>1679036857000</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1679036857000</updated>
-    </task>
-    <option name="localTasksCounter" value="19" />
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,8 +256,6 @@
     <MESSAGE value="added cherry collision &amp; score" />
     <MESSAGE value="added map for colab mode" />
     <MESSAGE value="added time is up screen" />
-    <MESSAGE value="changed collab mode map" />
-    <MESSAGE value="done with both modes" />
-    <option name="LAST_COMMIT_MESSAGE" value="done with both modes" />
+    <option name="LAST_COMMIT_MESSAGE" value="added time is up screen" />
   </component>
 </project>

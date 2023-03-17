@@ -138,8 +138,8 @@ class Base_Scene extends Scene {
         this.paused = true;
 
         // Timer
-        this.timerCount = 10;
-        this.timerCountShown = 10;
+        this.timerCount = 60;
+        this.timerCountShown = 60;
 
         // Direction status
         this.up = true;
@@ -258,12 +258,12 @@ export class Game extends Base_Scene {
             this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
             this.new_line();
 
-            this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
+            /*this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
-            this.new_line();
+            this.new_line();*/
             this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
             this.new_line();
 
@@ -432,12 +432,12 @@ export class Game extends Base_Scene {
                 this.live_string(box => box.textContent = "Time is Up!");
                 this.new_line();
             }
-            this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
+            /*this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
-            this.new_line();
+            this.new_line();*/
             this.live_string(box => box.textContent = "-Player #1 score: " + this.score1.toFixed(0));
             this.new_line();
             this.live_string(box => box.textContent = "-Player #2 score: " + this.score2.toFixed(0));
@@ -600,16 +600,16 @@ export class Game extends Base_Scene {
         else if(this.status == "START") {
             this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
             this.new_line();
-            this.live_string(box => box.textContent = "You have 120 seconds to complete the game!");
+            this.live_string(box => box.textContent = "You have 60 seconds to complete the game!");
             this.new_line();
-            this.live_string(box => box.textContent = "Timer: 120.00");
+            this.live_string(box => box.textContent = "Timer: 60.00");
             this.new_line();
 
             this.key_triggered_button("Collab Mode", ["y"], () => {
                 this.status = "PLAY";
                 this.paused = false;
-                this.timerCountShown = 10;
-                this.timerCount = 10;
+                this.timerCountShown = 60;
+                this.timerCount = 60;
 
                 // Remove stuff on START page
                 let buttons = document.getElementsByTagName('button');
@@ -631,8 +631,8 @@ export class Game extends Base_Scene {
             this.key_triggered_button("Compete Mode", ["n"], () => {
                 this.status = "PLAY2";
                 this.paused = false;
-                this.timerCountShown = 10;
-                this.timerCount = 10;
+                this.timerCountShown = 60;
+                this.timerCount = 60;
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -809,6 +809,38 @@ export class Game extends Base_Scene {
             this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
             return;
         }
+        else if (this.status === "PLAYFAIL") {
+            this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+
+            // Text box in the Time is Up screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.collab_fail_page);
+            return;
+        }
+        else if (this.status === "PLAYSUCCESS") {
+            this.paused = true;
+            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
+            let light_position = vec4(0, -5, -5, -1);
+            program_state.set_camera(this.initial_camera_location);
+            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
+
+            let model_transform = Mat4.identity();
+            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
+            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
+
+            // Text box in the Time is Up screen
+            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
+            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.collab_success_page);
+            return;
+        }
         else if(this.status == "TIMEISUP") {
             this.paused = true;
             this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
@@ -843,38 +875,7 @@ export class Game extends Base_Scene {
 
             return;
         }
-        else if (this.status === "PLAYFAIL") {
-            this.paused = true;
-            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
-            let light_position = vec4(0, -5, -5, -1);
-            program_state.set_camera(this.initial_camera_location);
-            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
 
-            let model_transform = Mat4.identity();
-            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
-            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
-
-            // Text box in the Time is Up screen
-            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
-            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.collab_fail_page);
-            return;
-        }
-        else if (this.status === "PLAYSUCCESS") {
-            this.paused = true;
-            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
-            let light_position = vec4(0, -5, -5, -1);
-            program_state.set_camera(this.initial_camera_location);
-            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
-
-            let model_transform = Mat4.identity();
-            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
-            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
-
-            // Text box in the Time is Up screen
-            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
-            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.collab_success_page);
-            return;
-        }
 
         if (this.paused) { return;}
 
@@ -1288,14 +1289,6 @@ export class Game extends Base_Scene {
         // Set collab mode end page after timer's up
         this.timerCountShown = this.timerCountShown - program_state.animation_delta_time / 1000;
         this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
-        if (this.status === "PLAY" && this.timerCount <= 0){
-            if (this.total_score >= 1) {
-                this.status = "PLAYSUCCESS";
-            } else {
-                this.status = "PLAYFAIL";
-            }
-            return;
-        }
 
         //Timer as a whole
         if (this.timerCount <= 0){
@@ -1317,6 +1310,15 @@ export class Game extends Base_Scene {
             }
 
             this.make_control_panel();
+        }
+
+        if (this.status === "PLAY" && this.timerCount <= 0.01){
+            if (this.total_score >= 60) {
+                this.status = "PLAYSUCCESS";
+            } else {
+                this.status = "PLAYFAIL";
+            }
+            return;
         }
 
         // Draw pacman depending on two modes
