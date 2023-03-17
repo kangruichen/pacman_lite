@@ -232,7 +232,156 @@ export class Game extends Base_Scene {
     }
 
     make_control_panel() {
-        if(this.status === "PLAY" || this.status === "PLAY2") {
+        if(this.status === "PLAY") {
+            // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
+            //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
+            this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
+            this.new_line();
+            this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
+            this.new_line();
+
+            if(this.timerCount <= 0){
+                this.live_string(box => box.textContent = "Time is Up!");
+                this.new_line();
+            }
+            this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
+                + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
+                + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
+            this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
+            this.new_line();
+
+            this.countdown = 0;
+            this.countdown2 = 0;
+
+            // Directions for player #1
+            this.key_triggered_button("Move up", ["ArrowUp"], () => {
+                if (this.countdown === 0) {
+                    this.down = false;
+                    this.right = false;
+                    this.left = false;
+                    if (this.up === false) {
+                        this.countdown = 30;
+                    }
+                    this.up = true;
+                    this.i1 = 0;
+                }
+
+            });
+            this.key_triggered_button("Move down", ["ArrowDown"], () => {
+                if (this.countdown === 0) {
+                    this.up = false;
+                    this.right = false;
+                    this.left = false;
+                    if (this.down === false) {
+                        this.countdown = 30;
+                    }
+                    this.down = true;
+                    this.i1 = 0;
+                }
+
+            });
+            this.key_triggered_button("Move left", ["ArrowLeft"], () => {
+                if (this.countdown === 0) {
+                    this.down = false;
+                    this.right = false;
+                    this.up = false;
+                    if (this.left === false) {
+                        this.countdown = 30;
+                    }
+                    this.left = true;
+                    this.i1 = 0;
+                }
+            });
+            this.key_triggered_button("Move right", ["ArrowRight"], () => {
+                if (this.countdown === 0) {
+                    if (this.right === false) {
+                        this.countdown = 30;
+                    }
+                    this.down = false;
+                    this.left = false;
+                    this.up = false;
+                    this.right = true;
+                    this.i1 = 0;
+                }
+            });
+
+            // Directions for player #2
+            this.key_triggered_button("Move up", ["w"], () => {
+                if (this.countdown2 === 0) {
+                    this.down2 = false;
+                    this.right2 = false;
+                    this.left2 = false;
+                    if (this.up2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.up2 = true;
+                    this.i = 0;
+                }
+            });
+            this.key_triggered_button("Move down", ["s"], () => {
+                if (this.countdown2 === 0) {
+                    this.up2 = false;
+                    this.left2 = false;
+                    this.right2 = false;
+                    if (this.down2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.down2 = true;
+                    this.i = 0;
+                }
+            });
+            this.key_triggered_button("Move left", ["a"], () => {
+                if (this.countdown2 === 0) {
+                    this.right2 = false;
+                    this.up2 = false;
+                    this.down2 = false;
+                    this.i = 0;
+                    if (this.left2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.left2 = true;
+                }
+            });
+            this.key_triggered_button("Move right", ["d"], () => {
+                if (this.countdown2 === 0) {
+                    this.left2 = false;
+                    this.up2 = false;
+                    this.down2 = false;
+                    this.i = 0;
+                    if (this.right2 === false) {
+                        this.countdown2 = 30;
+                    }
+                    this.right2 = true;
+                }
+            });
+
+            // Quit the game
+            this.key_triggered_button("Quit", ["q"], () => {
+                this.status = "START";
+                this.paused = true;
+
+                // Remove buttons on START page
+                let buttons = document.getElementsByTagName('button');
+                while(buttons.length > 0){
+                    buttons[0].parentNode.removeChild(buttons[0]);
+                }
+                let live_strings = document.getElementsByClassName('live_string');
+                while(live_strings.length > 0){
+                    live_strings[0].parentNode.removeChild(live_strings[0]);
+                }
+                let new_lines = document.getElementsByTagName('br');
+                while(new_lines.length > 0){
+                    new_lines[0].parentNode.removeChild(new_lines[0]);
+                }
+
+                // Add main game buttons
+                this.make_control_panel();
+            });
+        }
+
+        else if(this.status === "PLAY2") {
             // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
@@ -1187,14 +1336,14 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 56;  // Put the number of beans generated
-        let poison_count = 3;
+        let bean_count = 58;  // Put the number of beans generated
+        let poison_count = 9;
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
 
 
-        let cherry_count = 6;  // Put the number of cherries generated
+        let cherry_count = 8;  // Put the number of cherries generated
         //let TrCherryStem = Mat4.translation(-23, 0, -6.2);
         //let TrCherrySphere = Mat4.translation(-23, 0, -5);
         let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
@@ -1213,157 +1362,154 @@ export class Game extends Base_Scene {
 
             // Store beans
             if (this.status === "PLAY") {
-                while (i < 5) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                z = -35;
-                while (i < 9) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                x = -19;
-                while (i < 12) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 14) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = -15;
-                z = -50;
-                while (i < 18) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 20) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = -9;
-                z = -53;
-                while (i < 22) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 25) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 27) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
+                // leftmost column
+                this.pac1_bean_location[0] = [-23, -3];
+                this.pac1_bean_status[0] = true;
+                this.pac1_bean_location[1] = [-23, -9];
+                this.pac1_bean_status[1] = true;
+                this.pac2_bean_location[0] = [-23, -15];
+                this.pac2_bean_status[0] = true;
+                this.pac1_bean_location[2] = [-23, -21];
+                this.pac1_bean_status[2] = true;
+                this.pac2_bean_location[1] = [-21, -21];
+                this.pac2_bean_status[1] = true;
+                this.pac2_bean_location[2] = [-23, -27];
+                this.pac2_bean_status[2] = true;
+                this.pac2_bean_location[3] = [-23, -30];
+                this.pac2_bean_status[3] = true;
+                this.pac1_bean_location[3] = [-23, -35];
+                this.pac1_bean_status[3] = true;
+                this.pac2_bean_location[4] = [-23, -41];
+                this.pac2_bean_status[4] = true;
+                this.pac1_bean_location[4] = [-23, -53];
+                this.pac1_bean_status[4] = true;
+                this.pac2_bean_location[5] = [-21, -27];
+                this.pac2_bean_status[5] = true;
+                this.pac1_bean_location[5] = [-23, -47];
+                this.pac1_bean_status[5] = true;
+                // 2nd column
+                this.pac1_bean_location[6] = [-19, -53];
+                this.pac1_bean_status[6] = true;
+                this.pac1_bean_location[7] = [-19, -3];
+                this.pac1_bean_status[7] = true;
+                this.pac1_bean_location[8] = [-21, -30];
+                this.pac1_bean_status[8] = true;
+                this.pac1_bean_location[9] = [-21, -35];
+                this.pac1_bean_status[9] = true;
+                this.pac2_bean_location[6] = [-19, -47];
+                this.pac2_bean_status[6] = true;
+                this.pac2_bean_location[7] = [-19, -9];
+                this.pac2_bean_status[7] = true;
+                // 3rd, 4th, 5th column
+                this.pac2_bean_location[8] = [-12, -30];
+                this.pac2_bean_status[8] = true;
+                this.pac2_bean_location[9] = [-12, -9];
+                this.pac2_bean_status[9] = true;
+                this.pac1_bean_location[10] = [-15, -38];
+                this.pac1_bean_status[10] = true;
+                this.pac2_bean_location[10] = [-15, -18];
+                this.pac2_bean_status[10] = true;
+                this.pac2_bean_location[11] = [-12, -3];
+                this.pac2_bean_status[11] = true;
+                this.pac1_bean_location[11] = [-12, -53];
+                this.pac1_bean_status[11] = true;
+                // center part
+                this.pac1_bean_location[12] = [-9, -41];
+                this.pac1_bean_status[12] = true;
+                this.pac1_bean_location[13] = [-9, -35];
+                this.pac1_bean_status[13] = true;
+                this.pac2_bean_location[12] = [-9, -15];
+                this.pac2_bean_status[12] = true;
+                this.pac2_bean_location[13] = [-9, -21];
+                this.pac2_bean_status[13] = true;
 
-                // Draw right side symmetrically
-                i = 0
-                x = 23;
-                z = -3;
-                while (i < 5) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                z = -35;
-                while (i < 9) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                x = 19;
-                while (i < 12) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 14) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = 15;
-                z = -50;
-                while (i < 18) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 20) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = 9;
-                z = -53;
-                while (i < 22) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 25) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 27) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
+                // Symmetrically draw the right half
+                // leftmost column
+                this.pac1_bean_location[14] = [23, -3];
+                this.pac1_bean_status[14] = true;
+                this.pac1_bean_location[15] = [23, -9];
+                this.pac1_bean_status[15] = true;
+                this.pac2_bean_location[14] = [23, -15];
+                this.pac2_bean_status[14] = true;
+                this.pac1_bean_location[16] = [23, -21];
+                this.pac1_bean_status[16] = true;
+                this.pac2_bean_location[15] = [21, -21];
+                this.pac2_bean_status[15] = true;
+                this.pac2_bean_location[16] = [23, -27];
+                this.pac2_bean_status[16] = true;
+                this.pac2_bean_location[17] = [23, -30];
+                this.pac2_bean_status[17] = true;
+                this.pac1_bean_location[17] = [23, -35];
+                this.pac1_bean_status[17] = true;
+                this.pac2_bean_location[18] = [23, -41];
+                this.pac2_bean_status[18] = true;
+                this.pac1_bean_location[18] = [23, -53];
+                this.pac1_bean_status[18] = true;
+                this.pac2_bean_location[19] = [21, -35];
+                this.pac2_bean_status[19] = true;
+                this.pac1_bean_location[19] = [23, -47];
+                this.pac1_bean_status[19] = true;
+                // 2nd column
+                this.pac1_bean_location[20] = [19, -53];
+                this.pac1_bean_status[20] = true;
+                this.pac1_bean_location[21] = [19, -3];
+                this.pac1_bean_status[21] = true;
+                this.pac1_bean_location[22] = [21, -30];
+                this.pac1_bean_status[22] = true;
+                this.pac1_bean_location[23] = [21, -27];
+                this.pac1_bean_status[23] = true;
+                this.pac2_bean_location[20] = [19, -47];
+                this.pac2_bean_status[20] = true;
+                this.pac2_bean_location[21] = [19, -9];
+                this.pac2_bean_status[21] = true;
+                // 3rd, 4th, 5th column
+                this.pac2_bean_location[22] = [12, -30];
+                this.pac2_bean_status[22] = true;
+                this.pac2_bean_location[23] = [12, -9];
+                this.pac2_bean_status[23] = true;
+                this.pac1_bean_location[24] = [15, -38];
+                this.pac1_bean_status[24] = true;
+                this.pac2_bean_location[24] = [15, -18];
+                this.pac2_bean_status[24] = true;
+                this.pac2_bean_location[25] = [12, -3];
+                this.pac2_bean_status[25] = true;
+                this.pac1_bean_location[25] = [12, -53];
+                this.pac1_bean_status[25] = true;
+                // center part
+                this.pac1_bean_location[26] = [9, -41];
+                this.pac1_bean_status[26] = true;
+                this.pac1_bean_location[27] = [9, -35];
+                this.pac1_bean_status[27] = true;
+                this.pac2_bean_location[26] = [9, -15];
+                this.pac2_bean_status[26] = true;
+                this.pac2_bean_location[27] = [9, -21];
+                this.pac2_bean_status[27] = true;
 
+                this.pac1_bean_location[28] = [-3, -27];
+                this.pac1_bean_status[28] = true;
+                this.pac2_bean_location[28] = [0, -9];
+                this.pac2_bean_status[28] = true;
 
-                x = 23;
-                z = -40;
-                while (i < 29) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z - 3;
-                    i = i + 1;
-                }
+                // Poisonous beans
+                this.poison_location[0] = [-12, -27];
+                this.poison_status[0] = true;
+                this.poison_location[1] = [-19, -30];
+                this.poison_status[1] = true;
+                this.poison_location[2] = [-15, -15];
+                this.poison_status[2] = true;
+                this.poison_location[3] = [12, -27];
+                this.poison_status[3] = true;
+                this.poison_location[4] = [19, -30];
+                this.poison_status[4] = true;
+                this.poison_location[5] = [15, -15];
+                this.poison_status[5] = true;
+                this.poison_location[6] = [0, -35];
+                this.poison_status[6] = true;
+                this.poison_location[7] = [3, -3];
+                this.poison_status[7] = true;
+                this.poison_location[8] = [-19, -35];
+                this.poison_status[8] = true;
 
-                i = 0;
-                while (i<poison_count){
-                    this.poison_location[i] = [u, v];
-                    this.poison_status[i] = true;
-                    v = v - 3;
-                    i = i + 1;
-                }
             }
             else if (this.status === "PLAY2") {
             }
@@ -1444,6 +1590,12 @@ export class Game extends Base_Scene {
                 z0 = z0 - 6;
                 i = i + 1;
             }
+            this.cherry_stem_location[6] = [-19, -27.7];
+            this.cherry_sphere_location[6] = [-19, -26.5];
+            this.cherry_status[6] = true;
+            this.cherry_stem_location[7] = [19, -27.7];
+            this.cherry_sphere_location[7] = [19, -26.5];
+            this.cherry_status[7] = true;
 
             // Store walls
             i = 0;
@@ -2123,7 +2275,7 @@ export class Game extends Base_Scene {
         // Draw beans (collab mode)
         if (this.status === "PLAY") {
             let w = 0;
-            while (w < 27) {
+            while (w < bean_count/2) {
                 if (this.pac1_front < this.pac1_bean_location[w][1] && this.pac1_back > this.pac1_bean_location[w][1] && this.pac1_right > this.pac1_bean_location[w][0] && this.pac1_left < this.pac1_bean_location[w][0]) {
                     this.pac1_bean_status[w] = false;
                 }
