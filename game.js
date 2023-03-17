@@ -427,7 +427,6 @@ export class Game extends Base_Scene {
             this.new_line();
             this.live_string(box => box.textContent = "-Pacman2 front: " + this.pac2_front.toFixed(2) + ", back: " + this.pac2_back.toFixed(2)
                 + ", left: " + this.pac2_left.toFixed(2) + ", right: " + this.pac2_right.toFixed(2));
-            this.live_string(box => box.textContent = "-Total score: " + this.total_score.toFixed(0));
             this.new_line();
             this.live_string(box => box.textContent = "-Player #1 score: " + this.score1.toFixed(0));
             this.new_line();
@@ -1473,7 +1472,7 @@ export class Game extends Base_Scene {
 
 
         let cherry_count1 = 8;  // Put the number of cherries generated
-        let cherry_count2 = 8;
+        let cherry_count2 = 4;
         //let TrCherryStem = Mat4.translation(-23, 0, -6.2);
         //let TrCherrySphere = Mat4.translation(-23, 0, -5);
         let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
@@ -1639,8 +1638,9 @@ export class Game extends Base_Scene {
                 this.poison_status[7] = true;
                 this.poison_location[8] = [-19, -35];
                 this.poison_status[8] = true;
-
             }
+
+            // Competition mode
             else if (this.status === "PLAY2") {
                 while (i < 4) {
                     this.bean_location[i] = [x,z];
@@ -1945,6 +1945,7 @@ export class Game extends Base_Scene {
                     z = z - 6;
                     i = i + 1;
                 }
+
                 // add cherries
                 this.cherry_stem_location[0] = [-2, -21.2];
                 this.cherry_sphere_location[0] = [-2, -20];
@@ -1964,87 +1965,89 @@ export class Game extends Base_Scene {
             }
 
             // Store cherries (same for both modes)
-            i = 0;
-            x = -23;  // cherry stem
-            z = -6.2;
-            let x0 = -23;  // cherry sphere
-            let z0 = -5;
-            while (i < 1) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = -15;
-            z = -41.2;
-            x0 = -15;
-            z0 = -40;
-            while (i < 2) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = -3;
-            z = -41.2;
-            x0 = -3;
-            z0 = -40;
-            while (i < 3) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
+            if (this.status === "PLAY") {
+                i = 0;
+                x = -23;  // cherry stem
+                z = -6.2;
+                let x0 = -23;  // cherry sphere
+                let z0 = -5;
+                while (i < 1) {
+                    this.cherry_stem_location[i] = [x, z];
+                    this.cherry_sphere_location[i] = [x0, z0];
+                    this.cherry_status[i] = true;
+                    z = z - 6;
+                    z0 = z0 - 6;
+                    i = i + 1;
+                }
+                x = -15;
+                z = -41.2;
+                x0 = -15;
+                z0 = -40;
+                while (i < 2) {
+                    this.cherry_stem_location[i] = [x, z];
+                    this.cherry_sphere_location[i] = [x0, z0];
+                    this.cherry_status[i] = true;
+                    z = z - 6;
+                    z0 = z0 - 6;
+                    i = i + 1;
+                }
+                x = -3;
+                z = -41.2;
+                x0 = -3;
+                z0 = -40;
+                while (i < 3) {
+                    this.cherry_stem_location[i] = [x, z];
+                    this.cherry_sphere_location[i] = [x0, z0];
+                    this.cherry_status[i] = true;
+                    z = z - 6;
+                    z0 = z0 - 6;
+                    i = i + 1;
+                }
 
-            // Symmetrically draw the right side
-            x = 23;
-            z = -6.2;
-            x0 = 23;
-            z0 = -5;
-            while (i < 4) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
+                // Symmetrically draw the right side
+                x = 23;
+                z = -6.2;
+                x0 = 23;
+                z0 = -5;
+                while (i < 4) {
+                    this.cherry_stem_location[i] = [x, z];
+                    this.cherry_sphere_location[i] = [x0, z0];
+                    this.cherry_status[i] = true;
+                    z = z - 6;
+                    z0 = z0 - 6;
+                    i = i + 1;
+                }
+                x = 15;
+                z = -41.2;
+                x0 = 15;
+                z0 = -40;
+                while (i < 5) {
+                    this.cherry_stem_location[i] = [x, z];
+                    this.cherry_sphere_location[i] = [x0, z0];
+                    this.cherry_status[i] = true;
+                    z = z - 6;
+                    z0 = z0 - 6;
+                    i = i + 1;
+                }
+                x = 3;
+                z = -41.2;
+                x0 = 3;
+                z0 = -40;
+                while (i < cherry_count1) {
+                    this.cherry_stem_location[i] = [x, z];
+                    this.cherry_sphere_location[i] = [x0, z0];
+                    this.cherry_status[i] = true;
+                    z = z - 6;
+                    z0 = z0 - 6;
+                    i = i + 1;
+                }
+                this.cherry_stem_location[6] = [-19, -27.7];
+                this.cherry_sphere_location[6] = [-19, -26.5];
+                this.cherry_status[6] = true;
+                this.cherry_stem_location[7] = [19, -27.7];
+                this.cherry_sphere_location[7] = [19, -26.5];
+                this.cherry_status[7] = true;
             }
-            x = 15;
-            z = -41.2;
-            x0 = 15;
-            z0 = -40;
-            while (i < 5) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = 3;
-            z = -41.2;
-            x0 = 3;
-            z0 = -40;
-            while (i < cherry_count1) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            this.cherry_stem_location[6] = [-19, -27.7];
-            this.cherry_sphere_location[6] = [-19, -26.5];
-            this.cherry_status[6] = true;
-            this.cherry_stem_location[7] = [19, -27.7];
-            this.cherry_sphere_location[7] = [19, -26.5];
-            this.cherry_status[7] = true;
 
             // Store walls
             i = 0;
@@ -2720,11 +2723,17 @@ export class Game extends Base_Scene {
                 w += 1;
             }
         }
-        if (this.status === "PLAY2") {
+        else if (this.status === "PLAY2") {
             let w = 0;
             let TrCherryStem = Mat4.identity();
             let TrCherrySphere = Mat4.identity();
             while (w < cherry_count2) {
+                if (this.pac1_front < this.cherry_sphere_location[w][1] && this.pac1_back > this.cherry_sphere_location[w][1] && this.pac1_right > this.cherry_sphere_location[w][0] && this.pac1_left < this.cherry_sphere_location[w][0]) {
+                    this.cherry_status[w] = 0;
+                }
+                if (this.pac2_front < this.cherry_sphere_location[w][1] && this.pac2_back > this.cherry_sphere_location[w][1] && this.pac2_right > this.cherry_sphere_location[w][0] && this.pac2_left < this.cherry_sphere_location[w][0]) {
+                    this.cherry_status[w] = 2;
+                }
                 if (this.cherry_status[w] === true) {
                     TrCherryStem = Mat4.identity().times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
                     TrCherrySphere = Mat4.identity().times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
@@ -2773,7 +2782,6 @@ export class Game extends Base_Scene {
                 }
                 w += 1;
             }
-
 
         }
 
@@ -2844,14 +2852,16 @@ export class Game extends Base_Scene {
                 }
             }
         }
+
+        // Scoring (compete mode)
         else if (this.status === "PLAY2") {
             this.score1 = 0;
             this.score2 = 0;
             for (let i = 0; i < bean_count2; i++) {
-                if (this.bean_status[i] === false) {
+                if (this.bean_status[i] === 0) {
                     this.score1 += 1;
                 }
-                if (this.bean_status[i] === false) {
+                if (this.bean_status[i] === 2) {
                     this.score2 += 1;
                 }
             }
