@@ -841,9 +841,9 @@ export class Game extends Base_Scene {
                     }
 
                     if (judge && this.pac1_front > -54.5) {
-                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                        this.pac1_front = this.pac1_front - 0.03;
-                        this.pac1_back = this.pac1_back - 0.03;
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.06));
+                        this.pac1_front = this.pac1_front - 0.06;
+                        this.pac1_back = this.pac1_back - 0.06;
                     }
                 }
             }
@@ -876,9 +876,9 @@ export class Game extends Base_Scene {
                         i = i + 1;
                     }
                     if (judge && this.pac1_back < -1.5) {
-                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                        this.pac1_front = this.pac1_front + 0.03;
-                        this.pac1_back = this.pac1_back + 0.03;
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.06));
+                        this.pac1_front = this.pac1_front + 0.06;
+                        this.pac1_back = this.pac1_back + 0.06;
                     }
                 }
             }
@@ -911,9 +911,9 @@ export class Game extends Base_Scene {
                         i = i + 1;
                     }
                     if (judge && this.pac1_left > -24.5) {
-                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                        this.pac1_left = this.pac1_left - 0.03;
-                        this.pac1_right = this.pac1_right - 0.03;
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.06));
+                        this.pac1_left = this.pac1_left - 0.06;
+                        this.pac1_right = this.pac1_right - 0.06;
                     }
                 }
             }
@@ -946,9 +946,9 @@ export class Game extends Base_Scene {
                         i = i + 1;
                     }
                     if (judge && this.pac1_right < 24.5) {
-                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.03));
-                        this.pac1_left = this.pac1_left + 0.03;
-                        this.pac1_right = this.pac1_right + 0.03;
+                        this.pacman_transform = this.pacman_transform.times(Mat4.translation(0, 0, -0.06));
+                        this.pac1_left = this.pac1_left + 0.06;
+                        this.pac1_right = this.pac1_right + 0.06;
                     }
                 }
             }
@@ -1056,9 +1056,9 @@ export class Game extends Base_Scene {
                     }
 
                     if (judge && this.pac2_front > -54.5) {
-                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                        this.pac2_front = this.pac2_front - 0.03;
-                        this.pac2_back = this.pac2_back - 0.03;
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.06));
+                        this.pac2_front = this.pac2_front - 0.06;
+                        this.pac2_back = this.pac2_back - 0.06;
                     }
                 }
             }
@@ -1091,9 +1091,9 @@ export class Game extends Base_Scene {
                         i = i + 1;
                     }
                     if (judge && this.pac2_back < -1.5) {
-                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                        this.pac2_front = this.pac2_front + 0.03;
-                        this.pac2_back = this.pac2_back + 0.03;
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.06));
+                        this.pac2_front = this.pac2_front + 0.06;
+                        this.pac2_back = this.pac2_back + 0.06;
                     }
                 }
             }
@@ -1126,9 +1126,9 @@ export class Game extends Base_Scene {
                         i = i + 1;
                     }
                     if (judge && this.pac2_left > -24.5) {
-                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                        this.pac2_left = this.pac2_left - 0.03;
-                        this.pac2_right = this.pac2_right - 0.03;
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.06));
+                        this.pac2_left = this.pac2_left - 0.06;
+                        this.pac2_right = this.pac2_right - 0.06;
                     }
                 }
             }
@@ -1161,9 +1161,9 @@ export class Game extends Base_Scene {
                         i = i + 1;
                     }
                     if (judge && this.pac2_right < 24.5) {
-                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.03));
-                        this.pac2_left = this.pac2_left + 0.03;
-                        this.pac2_right = this.pac2_right + 0.03;
+                        this.pacman_transform2 = this.pacman_transform2.times(Mat4.translation(0, 0, -0.06));
+                        this.pac2_left = this.pac2_left + 0.06;
+                        this.pac2_right = this.pac2_right + 0.06;
                     }
                 }
             }
