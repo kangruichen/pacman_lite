@@ -1321,6 +1321,8 @@ export class Game extends Base_Scene {
         }
 
         if (this.status === "PLAY" && this.timerCount <= 0.01){
+            this.timerCountShown = 0;
+            this.timerCount = 0;
             if (this.total_score >= 60) {
                 this.status = "PLAYSUCCESS";
             } else {
