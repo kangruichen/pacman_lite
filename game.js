@@ -33,6 +33,7 @@ class Cube extends Shape {
 class Cube_Outline extends Shape {
     constructor() {
         super("position", "color");
+        //  TODO (Requirement 5).
         // When a set of lines is used in graphics, you should think of the list entries as
         // broken down into pairs; each pair of vertices will be drawn as a line segment.
         // Note: since the outline is rendered with Basic_shader, you need to redefine the position and color of each vertex
@@ -57,17 +58,23 @@ class Cube_Single_Strip extends Shape {
         //this.indices = [0,4,7,6,3,2,1,6,5,4,1,0,3,7];
         this.indices = [0,4,7,5,6,2,7,3,0,2,1,5,0,4];
         //this.indices = [0,7,4,5,0,1,2,5,6,7,2,3,0,2];
+        // TODO (Requirement 6)
     }
 }
 
 
 class Base_Scene extends Scene {
+    /**
+     *  **Base_scene** is a Scene that can be added to any display canvas.
+     *  Setup the shapes, materials, camera, and lighting here.
+     */
     constructor() {
+        // constructor(): Scenes begin by populating initial values like the Shapes and Materials they'll need.
         super();
         this.hover = this.swarm = false;
         this.outlined = this.swarm = false;
         this.swarm2 = false;
-
+        // At the beginning of our program, load one of each of these shape definitions onto the GPU.
         this.shapes = {
             'cube': new Cube(),
             box_start_page: new defs.Cube(),
@@ -106,11 +113,6 @@ class Base_Scene extends Scene {
                 color: hex_color("#000000"),
                 ambient: 1,
                 texture: new Texture("assets/titleScreen5.png", "NEAREST")
-            }),
-            timeIsUp_page: new Material(new defs.Textured_Phong(), {
-                color: hex_color("#000000"),
-                ambient: 1,
-                texture: new Texture("assets/TimeIsUpScreen.png", "NEAREST")
             })
         };
 
@@ -122,8 +124,8 @@ class Base_Scene extends Scene {
         this.paused = true;
 
         // Timer
-        this.timerCount = 120;
-        this.timerCountShown = 120;
+        this.timerCount = 1000;
+
 
         // Direction status
         this.up = true;
@@ -165,10 +167,8 @@ class Base_Scene extends Scene {
 
         this.pac1_poison = [];
         this.pac2_poison = [];
-        this.pac1_bean_location = [];
-        this.pac2_bean_location = [];
-        this.pac1_bean_status = [];
-        this.pac2_bean_status = [];
+        this.pac1_normal = [];
+        this.pac2_normal = [];
 
         // Score board
         this.total_score = 0;
@@ -194,8 +194,8 @@ class Base_Scene extends Scene {
             Math.PI / 4, context.width / context.height, 1, 100);
 
         // *** Lights: *** Values of vector or point lights.
-        let light_position = vec4(0, 200, -30, 1);
-        program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 50000)];
+        let light_position = vec4(0, 5, -15, 1);
+        program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
     }
 }
 
@@ -207,6 +207,7 @@ export class Game extends Base_Scene {
      * experimenting with matrix transformations.
      */
     set_colors() {
+        // TODO:  Create a class member variable to store your cube's colors.
         let cnt = 0
         let len_c = this.color.length;
         //this.color = []
@@ -237,13 +238,16 @@ export class Game extends Base_Scene {
             //this.control_panel.innerHTML += 'Use WASD to control Pacman 1, arrow keys to control Pacman 2.';
             this.live_string(box => box.textContent = "Use WASD to control Pacman 1, arrow keys to control Pacman 2.");
             this.new_line();
-            this.live_string(box => box.textContent = "Timer: " + this.timerCountShown.toFixed(2));
+            this.live_string(box => box.textContent = "Timer: " + this.timerCount.toFixed(2));
             this.new_line();
-
             if(this.timerCount <= 0){
                 this.live_string(box => box.textContent = "Time is Up!");
                 this.new_line();
             }
+            this.live_string(box => box.textContent = "-Player #1 life: " + (2-this.pac1_poison.length).toFixed(0));
+            this.new_line();
+            this.live_string(box => box.textContent = "-Player #2 life: " + (2-this.pac2_poison.length).toFixed(0));
+            this.new_line();
             this.live_string(box => box.textContent = "-Pacman1 front: " + this.pac1_front.toFixed(2) + ", back: " + this.pac1_back.toFixed(2)
                 + ", left: " + this.pac1_left.toFixed(2) + ", right: " + this.pac1_right.toFixed(2));
             this.new_line();
@@ -389,14 +393,19 @@ export class Game extends Base_Scene {
         else if(this.status == "START") {
             this.live_string(box => box.textContent = "Welcome to the Ultimate Pacman!");
             this.new_line();
-            this.live_string(box => box.textContent = "You have 120 seconds to complete the game!");
-            this.new_line();
-            this.live_string(box => box.textContent = "Timer: 120");
+
+            this.live_string(box => box.textContent = "You have 60 seconds to complete the game!");
             this.new_line();
 
-            this.key_triggered_button("Collab Mode", ["y"], () => {
+            this.live_string(box => box.textContent = "Timer: 60");
+            this.new_line();
+
+
+
+            this.key_triggered_button("Colab Mode", ["y"], () => {
                 this.status = "PLAY";
                 this.paused = false;
+
 
                 // Remove stuff on START page
                 let buttons = document.getElementsByTagName('button');
@@ -419,57 +428,6 @@ export class Game extends Base_Scene {
                 this.status = "PLAY2";
                 this.paused = false;
 
-                // Remove buttons on START page
-                let buttons = document.getElementsByTagName('button');
-                while(buttons.length > 0){
-                    buttons[0].parentNode.removeChild(buttons[0]);
-                }
-                let live_strings = document.getElementsByClassName('live_string');
-                while(live_strings.length > 0){
-                    live_strings[0].parentNode.removeChild(live_strings[0]);
-                }
-                let new_lines = document.getElementsByTagName('br');
-                while(new_lines.length > 0){
-                    new_lines[0].parentNode.removeChild(new_lines[0]);
-                }
-
-                // Add stuff on PLAY2 page
-                this.make_control_panel();
-            });
-        }
-
-        else if(this.status == "TIMEISUP") {
-            this.live_string(box => box.textContent = "Time is Up!");
-            this.new_line();
-            this.live_string(box => box.textContent = "Thank you very much for playing!");
-            this.new_line();
-            this.live_string(box => box.textContent = "Timer: 0.00");
-            this.new_line();
-
-            this.key_triggered_button("Collab Mode", ["y"], () => {
-                this.status = "PLAY";
-                this.paused = false;
-
-                // Remove stuff on START page
-                let buttons = document.getElementsByTagName('button');
-                while(buttons.length > 0){
-                    buttons[0].parentNode.removeChild(buttons[0]);
-                }
-                let live_strings = document.getElementsByClassName('live_string');
-                while(live_strings.length > 0){
-                    live_strings[0].parentNode.removeChild(live_strings[0]);
-                }
-                let new_lines = document.getElementsByTagName('br');
-                while(new_lines.length > 0){
-                    new_lines[0].parentNode.removeChild(new_lines[0]);
-                }
-
-                // Add stuff on PLAY page
-                this.make_control_panel();
-            });
-            this.key_triggered_button("Compete Mode", ["n"], () => {
-                this.status = "PLAY2";
-                this.paused = false;
 
                 // Remove buttons on START page
                 let buttons = document.getElementsByTagName('button');
@@ -488,6 +446,7 @@ export class Game extends Base_Scene {
                 // Add stuff on PLAY2 page
                 this.make_control_panel();
             });
+
         }
     }
 
@@ -512,6 +471,7 @@ export class Game extends Base_Scene {
 
         const t = this.t = program_state.animation_time / 1000;
         this.t = 0;
+
 
 
         // Set game status
@@ -556,27 +516,16 @@ export class Game extends Base_Scene {
             //this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.start_page);
             return;
         }
-        else if(this.status == "TIMEISUP") {
-            this.paused = true;
-            this.initial_camera_location = Mat4.look_at(vec3(0, 0, 40), vec3(0, 0, 0), vec3(0, 1, 4.5));
-            let light_position = vec4(0, -5, -5, -1);
-            program_state.set_camera(this.initial_camera_location);
-            program_state.lights = [new Light(light_position, color(1, 1, 1, 1), 1000)];
-
-            let model_transform = Mat4.identity();
-            model_transform = model_transform.times(Mat4.rotation(0.5*Math.PI, 1, 0, 0));
-            model_transform = model_transform.times(Mat4.rotation(-0.5*Math.PI, 0, 1, 0));
-
-            // Text box in the Time is Up screen
-            model_transform = Mat4.identity().times(Mat4.translation(0,0,-50)).times(Mat4.scale(50, 50, 1));
-            this.shapes.box_start_page.draw(context, program_state, model_transform, this.materials.timeIsUp_page);
-
-            return;
-        }
         if (this.paused) { return;}
 
         model_transform = Mat4.identity();
         this.shapes.cube.draw(context, program_state, model_transform, this.materials.plastic.override(this.color[0]));
+
+        // Score panel
+        //this.shapes.box.draw(context, program_state, Mat4.identity().times(Mat4.scale(1, 1, 1)).times(Mat4.translation(0, 5, 0)), this.materials.text_image);
+        //this.shapes.text.set_string("Hello, world!");
+        //this.shapes.text.draw(context, program_state,
+         //   model_transform.times(Mat4.translation(0, 5, 0)), this.text_image);
 
         // Blocks for boundary
         model_transform = model_transform.times(Mat4.translation(-2, 0, 0));
@@ -952,25 +901,6 @@ export class Game extends Base_Scene {
                     }
                 }
             }
-
-            /*  collision detection between pacman
-            let pac2_center_x = (this.pac2_left + this.pac2_right)/2;
-            let pac2_center_z = (this.pac2_front + this.pac2_back)/2;
-            if (this.pac1_front < pac2_center_z && this.pac1_back > pac2_center_z && this.pac1_right > pac2_center_x && this.pac1_left < pac2_center_x) {
-                if (this.direction = "right"){
-                    this.direction = "left";
-                }
-                if (this.direction = "left"){
-                    this.direction = "right";
-                }
-                if (this.direction = "up"){
-                    this.direction = "down";
-                }
-                if (this.direction = "down"){
-                    this.direction = "up";
-                }
-            }
-            */
         }
 
         let TrPacman1Eye1 = Mat4.translation(-0.2, 1, 0.05);
@@ -982,13 +912,12 @@ export class Game extends Base_Scene {
         let timeMod2 = timePacmanAnimationInt % 2;
 
         //Timer
-        this.timerCountShown = this.timerCountShown - program_state.animation_delta_time / 1000;
         this.timerCount = this.timerCount - program_state.animation_delta_time / 1000;
         if (this.timerCount <= 0){
-            this.timerCountShown = 120;
-            this.timerCount = 120;
-            this.status = "TIMEISUP";
+            this.timerCount = 0;
+            this.paused = true;
         }
+
 
         // Draw pacman depending on two modes
         if (this.status === "PLAY") {
@@ -1173,7 +1102,7 @@ export class Game extends Base_Scene {
         let TrPacman2Eye2 = Mat4.translation(-0.2, -1, 0.05);
         let ScPacman2Eye = Mat4.scale(.2, .2, .2);
 
-        // This if and else if is for the animation of the Pacman.
+        //This if and else if is for the animation of the Pacman.
         if (timeMod2 == 0){
             this.shapes.pacmanMouthClose.draw(context, program_state, this.pacman_transform2, this.materials.pacman2);
         }
@@ -1187,177 +1116,43 @@ export class Game extends Base_Scene {
             this.pacman_transform2.times(TrPacman2Eye2).times(ScPacman2Eye),
             this.materials.pacmanEyes);
 
-        let bean_count = 56;  // Put the number of beans generated
+        let bean_count = 10;  // Put the number of beans generated
         let poison_count = 3;
+        let bean_count2 = 90;
+        let poison_count2 = 13;
         let RtBean = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScBean = Mat4.scale(.75, .75, .75);
         model_transform = Mat4.identity();
 
 
-        let cherry_count = 6;  // Put the number of cherries generated
-        //let TrCherryStem = Mat4.translation(-23, 0, -6.2);
-        //let TrCherrySphere = Mat4.translation(-23, 0, -5);
+        let cherry_count = 4;  // Put the number of cherries generated
+        let TrCherryStem = Mat4.translation(-23, 0, -6.2);
+        let TrCherrySphere = Mat4.translation(-23, 0, -5);
         let RtCherry = Mat4.rotation(6 * t * Math.PI / 4, 0, 0, 1);
         let ScCherry = Mat4.scale(.75, .75, .75);
-        //this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
-        //this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
+        this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
+        this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
         model_transform = Mat4.identity();
 
         // ----------------- START STORING LOCATIONS (in arrays) --------------------
+        // SYMMETRY: fairness in competition mode
+
         if(this.creation) {
             let i = 0;
             let x = -23;  // right in the middle of gaps
-            let z = -3;
+            let z = -9;
             let u = -15;
             let v = -9;
-
-            // Store beans
             if (this.status === "PLAY") {
-                while (i < 5) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                z = -35;
-                while (i < 9) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                x = -19;
-                while (i < 12) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 14) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = -15;
-                z = -50;
-                while (i < 18) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 20) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = -9;
-                z = -53;
-                while (i < 22) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 25) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 27) {
-                    this.pac1_bean_location[i] = [x, z];
-                    this.pac1_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-
-                // Draw right side symmetrically
-                i = 0
-                x = 23;
-                z = -3;
-                while (i < 5) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                z = -35;
-                while (i < 9) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z - 6;
-                    i = i + 1;
-                }
-                x = 19;
-                while (i < 12) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 14) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = 15;
-                z = -50;
-                while (i < 18) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 20) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                x = 9;
-                z = -53;
-                while (i < 22) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 6;
-                while (i < 25) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-                z += 2;
-                while (i < 27) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
-                    z = z + 6;
-                    i = i + 1;
-                }
-
-
-                x = 23;
-                z = -40;
-                while (i < 29) {
-                    this.pac2_bean_location[i] = [x, z];
-                    this.pac2_bean_status[i] = true;
+                while (i < bean_count) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
                     z = z - 3;
                     i = i + 1;
                 }
 
                 i = 0;
+
                 while (i<poison_count){
                     this.poison_location[i] = [u, v];
                     this.poison_status[i] = true;
@@ -1366,86 +1161,329 @@ export class Game extends Base_Scene {
                 }
             }
             else if (this.status === "PLAY2") {
+                while (i < 4) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                z = z-2;
+                while (i < 7) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                this.poison_location[0] = [x,z];
+                this.poison_status[0] = true;
+                x = x+5;
+
+                while (i < 12) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+5;
+                    i = i+1;
+                }
+
+                x = x-1;
+
+                while (i < 16) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+4;
+                    i = i+1;
+                }
+
+                this.poison_location[1] = [x,z];
+                this.poison_status[1] = true;
+
+                z = z+6;
+
+                while (i < 19) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+                z = z+1;
+
+                this.bean_location[i] = [x,z];
+                this.bean_status[i] = true;
+                z = z+6;
+                i = i+1;
+
+                z = z+1;
+
+                this.poison_location[2] = [x,z];
+                this.poison_status[2] = true;
+
+                z = z+6;
+
+                while (i < 22) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+
+                while (i < 28) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+                this.poison_location[3] = [x,z];
+                this.poison_status[3] = true;
+                x = x-4;
+
+                while (i < 31) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+                while (i < 35) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                z = z-1;
+
+                this.poison_location[4] = [x,z];
+                this.poison_status[4] = true;
+
+                z = z-7;
+
+                while (i < 37) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+                x = x-1;
+
+                while (i < 43) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+4;
+                    i = i+1;
+                }
+
+                //place cherry#1
+
+                while (i < 47) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x+4;
+                    i = i+1;
+                }
+
+                this.poison_location[5] = [x,z];
+                this.poison_status[5] = true;
+                x = x-4;
+
+                z = z+6;
+
+                while (i < 49) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+
+                z = z+2;
+
+                this.poison_location[6] = [x,z];
+                this.poison_status[6] = true;
+
+                z = z+6;
+
+                while (i < 51) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    z = z+6;
+                    i = i+1;
+                }
+
+                while (i < 59) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+
+
+                while (i < 64) {
+                    this.bean_location[i] = [x, z];
+                    this.bean_status[i] = true;
+                    z = z-6;
+                    i = i+1;
+                }
+
+                x = x+1;
+
+                //place cherry#2
+
+
+                z = z-2;
+
+                while (i < 70) {
+                    if (i === 65)
+                    {
+                        this.poison_location[7] = [x,z];
+                        this.poison_status[7] = true;
+                        x = x+4;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    x = x+4;
+                    i = i+1;
+                }
+
+
+
+                while (i < 73) {
+                    if (i === 72)
+                    {
+                        this.poison_location[8] = [x,z];
+                        this.poison_status[8] = true;
+                        z = z+6;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    z = z+6;
+                    i = i+1;
+                }
+
+                //place cherry#3
+                z = z+2;
+
+                //x = x-4;
+
+                while (i < 78) {
+                    if (i === 76)
+                    {
+                        this.poison_location[9] = [x,z];
+                        this.poison_status[9] = true;
+                        x = x-4;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    x = x-4;
+                    i = i+1;
+                }
+
+                while (i < 80) {
+                    if (i === 79)
+                    {
+                        this.poison_location[10] = [x,z];
+                        this.poison_status[10] = true;
+                        z = z-6;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    z = z-6;
+                    i = i+1;
+                }
+
+                while (i < 84) {
+                    if (i === 83)
+                    {
+                        this.poison_location[11] = [x,z];
+                        this.poison_status[11] = true;
+                        x = x+4;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    x = x+4;
+                    i = i+1;
+                }
+
+                while (i < 86) {
+                    if (i === 85)
+                    {
+                        this.poison_location[12] = [x,z];
+                        this.poison_status[12] = true;
+                        z = z+6;
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    else {
+                        this.bean_location[i] = [x, z];
+                        this.bean_status[i] = true;
+                    }
+                    z = z+6;
+                    i = i+1;
+                }
+
+
+                while (i < bean_count2) {
+                    this.bean_location[i] = [x,z];
+                    this.bean_status[i] = true;
+                    x = x-4;
+                    i = i+1;
+                }
+
+                x = x+4;
+                z = z-6;
+
+
+
+
+                i = 13;
+                while(i<poison_count2){
+                    this.poison_location[i] = [x, z];
+                    this.poison_status[i] = true;
+                    z = z - 6;
+                    i = i + 1;
+                }
+
+                // add cherries
+                this.cherry_stem_location[0] = [-2, -21.2];
+                this.cherry_sphere_location[0] = [-2, -20];
+                this.cherry_status[0] = true;
+
+                this.cherry_stem_location[1] = [2, -21.2];
+                this.cherry_sphere_location[1] = [2, -20];
+                this.cherry_status[1] = true;
+
+                this.cherry_stem_location[2] = [6, -21.2];
+                this.cherry_sphere_location[2] = [6, -20];
+                this.cherry_status[2] = true;
+
+                this.cherry_stem_location[3] = [-6, -21.2];
+                this.cherry_sphere_location[3] = [-6, -20];
+                this.cherry_status[3] = true;
+
             }
 
-            // Store cherries (same for both modes)
-            i = 0;
-            x = -23;  // cherry stem
-            z = -6.2;
-            let x0 = -23;  // cherry sphere
-            let z0 = -5;
-            while (i < 1) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = -15;
-            z = -41.2;
-            x0 = -15;
-            z0 = -40;
-            while (i < 2) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = -3;
-            z = -41.2;
-            x0 = -3;
-            z0 = -40;
-            while (i < 3) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-
-            // Symmetrically draw the right side
-            x = 23;
-            z = -6.2;
-            x0 = 23;
-            z0 = -5;
-            while (i < 4) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = 15;
-            z = -41.2;
-            x0 = 15;
-            z0 = -40;
-            while (i < 5) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-            x = 3;
-            z = -41.2;
-            x0 = 3;
-            z0 = -40;
-            while (i < cherry_count) {
-                this.cherry_stem_location[i] = [x, z];
-                this.cherry_sphere_location[i] = [x0, z0];
-                this.cherry_status[i] = true;
-                z = z - 6;
-                z0 = z0 - 6;
-                i = i + 1;
-            }
-
-            // Store walls
             i = 0;
             x = 0;
             z = -2;
@@ -2095,24 +2133,36 @@ export class Game extends Base_Scene {
         }
 
 
+
+
         // ----------------- END DRAWING BLOCKS --------------------
-        // Draw cherries
-        if (this.status === "PLAY") {
+
+
+        /*
+        //draw beans
+        this.bean_location.push([-10, -10]);
+        this.bean_status.push(true);
+        model_transform = model_transform.times(Mat4.translation(10, 0, -10));
+
+        if(this.pac1_front<this.bean_location[0][0] && this.pac1_back>this.bean_location[0][0] && this.pac1_right > this.bean_location[0][1] && this.pac1_left < this.bean_location[0][1])
+        {
+            this.bean_status[0] = false;
+        }
+
+        if(this.bean_status[0]) {
+            this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+        }
+        */
+
+        // draw cherries
+        if (this.status === "PLAY2") {
             let w = 0;
             let TrCherryStem = Mat4.identity();
             let TrCherrySphere = Mat4.identity();
             while (w < cherry_count) {
-                if (this.pac1_front < this.cherry_sphere_location[w][1] && this.pac1_back > this.cherry_sphere_location[w][1] && this.pac1_right > this.cherry_sphere_location[w][0] && this.pac1_left < this.cherry_sphere_location[w][0]) {
-                    this.cherry_status[w] = 0;
-                }
-                if (this.pac2_front < this.cherry_sphere_location[w][1] && this.pac2_back > this.cherry_sphere_location[w][1] && this.pac2_right > this.cherry_sphere_location[w][0] && this.pac2_left < this.cherry_sphere_location[w][0]) {
-                    this.cherry_status[w] = 2;
-                }
                 if (this.cherry_status[w] === true) {
-                    TrCherryStem = Mat4.identity();
-                    TrCherrySphere = Mat4.identity();
-                    TrCherryStem = TrCherryStem.times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
-                    TrCherrySphere = TrCherrySphere.times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
+                    TrCherryStem = Mat4.identity().times(Mat4.translation(this.cherry_stem_location[w][0], 0, this.cherry_stem_location[w][1]));
+                    TrCherrySphere = Mat4.identity().times(Mat4.translation(this.cherry_sphere_location[w][0], 0, this.cherry_sphere_location[w][1]));
                     this.shapes.cherryStem.draw(context, program_state, TrCherryStem.times(RtCherry).times(ScCherry), this.materials.cherryStem);
                     this.shapes.cherrySphere.draw(context, program_state, TrCherrySphere.times(RtCherry).times(ScCherry), this.materials.cherrySphere);
                 }
@@ -2120,40 +2170,75 @@ export class Game extends Base_Scene {
             }
         }
 
-        // Draw beans (collab mode)
+        //draw beans
+        let w = 0;
         if (this.status === "PLAY") {
-            let w = 0;
-            while (w < 27) {
-                if (this.pac1_front < this.pac1_bean_location[w][1] && this.pac1_back > this.pac1_bean_location[w][1] && this.pac1_right > this.pac1_bean_location[w][0] && this.pac1_left < this.pac1_bean_location[w][0]) {
-                    this.pac1_bean_status[w] = false;
+            while (w < bean_count) {
+                if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = 0;
                 }
-                if (this.pac2_front < this.pac2_bean_location[w][1] && this.pac2_back > this.pac2_bean_location[w][1] && this.pac2_right > this.pac2_bean_location[w][0] && this.pac2_left < this.pac2_bean_location[w][0]) {
-                    this.pac2_bean_status[w] = false;
+                if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = 2;
                 }
-                if (this.pac1_bean_status[w] === true) {
+                if (this.bean_status[w] === true) {
                     model_transform = Mat4.identity();
-                    model_transform = model_transform.times(Mat4.translation(this.pac1_bean_location[w][0], 0, this.pac1_bean_location[w][1]));
-                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean.override(hex_color("#FFFF00")));
-                }
-                if (this.pac2_bean_status[w] === true) {
-                    model_transform = Mat4.identity();
-                    model_transform = model_transform.times(Mat4.translation(this.pac2_bean_location[w][0], 0, this.pac2_bean_location[w][1]));
-                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean.override(hex_color("#FFC0CB")));
+                    model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
                 }
                 w += 1;
             }
-
             w = 0
             while (w<poison_count){
                 if (this.pac1_front < this.poison_location[w][1] && this.pac1_back > this.poison_location[w][1] && this.pac1_right > this.poison_location[w][0] && this.pac1_left < this.poison_location[w][0]) {
                     this.poison_status[w] = false;
-                    if(!this.pac1_poison.includes(w)&&!this.pac2_poison.includes(w)) {
+                    if(!this.pac1_poison.includes(w)&&!this.pac2_poison.includes(w))
+                    {
                         this.pac1_poison.push(w);
                     }
                 }
                 if (this.pac2_front < this.poison_location[w][1] && this.pac2_back > this.poison_location[w][1] && this.pac2_right > this.poison_location[w][0] && this.pac2_left < this.poison_location[w][0]) {
                     this.poison_status[w] = false;
-                    if(!this.pac2_poison.includes(w)&&!this.pac1_poison.includes(w)) {
+                    if(!this.pac2_poison.includes(w)&&!this.pac1_poison.includes(w))
+                    {
+                        this.pac2_poison.push(w);
+                    }
+                }
+                if (this.poison_status[w]) {
+                    model_transform = Mat4.identity();
+                    model_transform = model_transform.times(Mat4.translation(this.poison_location[w][0], 0, this.poison_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean.override(blue));
+                }
+                w += 1;
+            }
+        }
+        if(this.status === "PLAY2"){
+            while (w < bean_count2) {
+                if (this.pac1_front < this.bean_location[w][1] && this.pac1_back > this.bean_location[w][1] && this.pac1_right > this.bean_location[w][0] && this.pac1_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = 0;
+                }
+                if (this.pac2_front < this.bean_location[w][1] && this.pac2_back > this.bean_location[w][1] && this.pac2_right > this.bean_location[w][0] && this.pac2_left < this.bean_location[w][0]) {
+                    this.bean_status[w] = 2;
+                }
+                if (this.bean_status[w] === true) {
+                    model_transform = Mat4.identity();
+                    model_transform = model_transform.times(Mat4.translation(this.bean_location[w][0], 0, this.bean_location[w][1]));
+                    this.shapes.bean.draw(context, program_state, model_transform.times(RtBean).times(ScBean), this.materials.bean);
+                }
+                w += 1;
+            }
+            w = 0
+            while (w<poison_count2){
+                if (this.pac1_front < this.poison_location[w][1] && this.pac1_back > this.poison_location[w][1] && this.pac1_right > this.poison_location[w][0] && this.pac1_left < this.poison_location[w][0]) {
+                    this.poison_status[w] = false;
+                    if(!this.pac1_poison.includes(w)&&!this.pac2_poison.includes(w))
+                    {
+                        this.pac1_poison.push(w);
+                    }
+                }
+                if (this.pac2_front < this.poison_location[w][1] && this.pac2_back > this.poison_location[w][1] && this.pac2_right > this.poison_location[w][0] && this.pac2_left < this.poison_location[w][0]) {
+                    this.poison_status[w] = false;
+                    if(!this.pac2_poison.includes(w)&&!this.pac1_poison.includes(w))
+                    {
                         this.pac2_poison.push(w);
                     }
                 }
@@ -2166,24 +2251,18 @@ export class Game extends Base_Scene {
             }
         }
 
-        // Update player scores (collab mode)
-        if (this.status === "PLAY") {
+
+
+        // Update player scores
+        if (this.status === "PLAY" || this.status === "PLAY2") {
             this.score1 = 0;
             this.score2 = 0;
-            for (let i = 0; i < bean_count/2; i++) {
-                if (this.pac1_bean_status[i] === false) {
+            for (let i = 0; i < bean_count; i++) {
+                if (this.bean_status[i] === 0) {
                     this.score1 += 1;
                 }
-                if (this.pac2_bean_status[i] === false) {
+                if (this.bean_status[i] === 2) {
                     this.score2 += 1;
-                }
-            }
-            for (let i = 0; i < cherry_count; i++) {
-                if (this.cherry_status[i] === 0) {
-                    this.score1 += 3;
-                }
-                if (this.cherry_status[i] === 2) {
-                    this.score2 += 3;
                 }
             }
         }
@@ -2197,5 +2276,6 @@ export class Game extends Base_Scene {
         const blue = hex_color("#1a9ffa");
         let model_transform = Mat4.identity();
         this.draw_box(context,program_state,model_transform);
+
     }
 }
